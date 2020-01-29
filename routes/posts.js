@@ -48,9 +48,9 @@ router.post("/:postId/comment", async (req, res) => {
     res.send(comment);
 })
 
-// router.get("/:postId/comments", async (req, res) => {
-//     const post = await Post.findOne({_id : req.params.postId}).populate("comments");
-//     res.send(post);
-// })
+router.get("/:postId/comments", async (req, res) => {
+    const post = await Post.findOne({_id : req.params.postId}).populate("comments");
+    res.send(post);
+})
 
 module.exports = router;
