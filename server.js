@@ -8,6 +8,7 @@ require("./mongo")
 //models
 require("./models/Post")
 require("./models/Comment")
+require("./models/User")
 
 //middleware
 app.use(bodyParser.json())
@@ -15,6 +16,7 @@ app.use(morgan())
 
 //routes
 app.use("/posts", require("./routes/posts"))
+app.use("/users", require("./routes/users"))
 
 //not found router 
 app.use((req, res, next) => {
@@ -39,6 +41,6 @@ if (app.get("env") == "production") {
     })
 }
 
-app.listen(8888, function() {
-    console.log("Server listion port 8888");
+app.listen(process.env.PORT, function() {
+    console.log("Server listion port " + process.env.PORT);
 })

@@ -1,8 +1,8 @@
-const router = require("express").Router();
-const mongoose = require("mongoose");
-
-const Post = mongoose.model("Post");
-const Comment = mongoose.model("Comment");
+const router = require("express").Router()
+const mongoose = require("mongoose")
+const Post = mongoose.model("Post")
+const Comment = mongoose.model("Comment")
+const auth = require("../middleware/auth")
 
 //posts
 router.get("/:postId", async (req, res) => {
@@ -11,7 +11,7 @@ router.get("/:postId", async (req, res) => {
     res.send(post);
 })
 
-router.get("/", async (req, res) => {
+router.get("/", auth, async (req, res) => {
     console.log(req.params.postId);
     const posts = await Post.find({})
     res.send(posts);
