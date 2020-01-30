@@ -6,13 +6,11 @@ const bcrypt = require("bcryptjs")
 router.post("/", async (req, res) => {
     const user = new User(req.body)
     await user.save()
-    const token = await user.generateAuthToken()
     res.send({
         status  : true,
         message : null,
         data    : {
-            user,
-            token
+            user
         }
     })
 })
@@ -29,13 +27,11 @@ router.post("/login", async (req, res) => {
         throw new Error({ error: 'Invalid login credentials' })
     }
     const token = await user.generateAuthToken()
+    user.token = token
     res.status(201).send({
         status  : true,
         message : null,
-        data    : {
-            user,
-            token
-        }
+        data    : user
     })
 })
 
