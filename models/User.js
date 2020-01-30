@@ -20,6 +20,9 @@ const user_schema = mongoose.Schema({
             }
         }
     },
+    image_url: {
+        type: String
+    },
     password: {
         type: String,
         required: true,
@@ -32,7 +35,8 @@ const user_schema = mongoose.Schema({
         }
     }]
 }, {
-    timestamps: true
+    timestamps: true,
+    versionKey: false
 })
 
 user_schema.pre('save', async function(next){
@@ -49,7 +53,7 @@ user_schema.methods.generateAuthToken = async function() {
     const token = jwt.sign({_id: user._id}, process.env.JWT_KEY)
     user.tokens = user.tokens.concat({token})
     await user.save()
-    return token
+    return  token
 }
 
 module.exports = mongoose.model("User", user_schema);

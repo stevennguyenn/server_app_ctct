@@ -29,12 +29,14 @@ app.use((req, res, next) => {
 if (app.get("env") == "production") {
     app.use((error, req, res, next) => {
         res.status(req.status || 500).send({
+            status  : false,
             message: error.message
         })
     })
 } else {
     app.use((error, req, res, next) => {
         res.status(req.status || 500).send({
+            status  : false,
             message: error.message,
             stack: error.stack
         })
