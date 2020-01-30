@@ -2,6 +2,7 @@ const router = require("express").Router()
 const mongoose = require("mongoose")
 const User = mongoose.model("User")
 const bcrypt = require("bcryptjs")
+const auth = require("../middleware/auth")
 
 router.post("/", async (req, res) => {
     const user = new User(req.body)
@@ -13,6 +14,29 @@ router.post("/", async (req, res) => {
             user
         }
     })
+})
+
+router.post("/change_password", auth, async (req, res) => {
+    const user = req.user
+    const password = req.user.password
+    const {old_password, new_password} = req.body
+    const isPasswordMatch = await bcrypt.compare(old_password, password)
+    if (isPasswordMatch == true) {
+        user.tokens = []
+        user.token = ""
+        console.log(new_password)
+        user.password = new_password
+        await user.save();
+        res.send({
+            status  : true,
+            message : "Change password successed",
+        })
+    } else {
+        res.send({
+            status  : false,
+            message : "Password incorrect",
+        })
+    }
 })
 
 router.post("/login", async (req, res) => {
