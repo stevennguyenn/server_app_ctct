@@ -9,6 +9,7 @@ require("./mongo")
 require("./models/Post")
 require("./models/Comment")
 require("./models/User")
+require("./models/Course")
 
 //middleware
 app.use(bodyParser.json())
@@ -17,6 +18,7 @@ app.use(morgan())
 //routes
 app.use("/posts", require("./routes/posts"))
 app.use("/users", require("./routes/users"))
+app.use("/theory", require("./routes/courses"))
 
 //not found router 
 app.use((req, res, next) => {
