@@ -36,11 +36,22 @@ const user_schema = mongoose.Schema({
     }],
     token: {
         type: String,
+    },
+    created_at: {
+        type: Date,
+        default: Date.now
+    },
+    updated_at: {
+        type: Date,
+        default: Date.now
     }
-}, {
-    timestamps: true,
-    versionKey: false
 })
+
+user_schema.methods.toJSON = function() {
+    var objc = this.toObject()
+    delete objc.password
+    return objc
+}
 
 user_schema.pre('save', async function(next){
     // Hash the password before saving the user model

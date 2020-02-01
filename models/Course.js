@@ -5,8 +5,14 @@ const course_schema = mongoose.Schema({
         type: String,
         required: true
     },
-}, {
-    timestamps: true
+    created_at: {
+        type: Date,
+        default: Date.now
+    },
+    updated_at: {
+        type: Date,
+        default: Date.now
+    }
 })
  
 module.exports = mongoose.model("Course", course_schema);

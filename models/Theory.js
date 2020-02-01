@@ -9,9 +9,23 @@ const theory_schema = mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         required: true,
         ref: "Course"
+    },
+    content : {
+        type: String,
+        required: true
+    },
+    like : {
+        type: Boolean,
+        select: false
+    },
+    created_at: {
+        type: Date,
+        default: Date.now
+    },
+    updated_at: {
+        type: Date,
+        default: Date.now
     }
-}, {
-    timestamps: true
 })
  
 module.exports = mongoose.model("Theory", theory_schema);

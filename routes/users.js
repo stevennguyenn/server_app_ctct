@@ -10,9 +10,7 @@ router.post("/", async (req, res) => {
     res.send({
         status  : true,
         message : null,
-        data    : {
-            user
-        }
+        data    : user
     })
 })
 
@@ -42,7 +40,7 @@ router.post("/change_password", auth, async (req, res) => {
 router.post("/login", async (req, res) => {
     const {email, password} = req.body
     // Search for a user by email and password.
-    const user = await User.findOne({ email} )
+    const user = await (User.findOne({ email}))
     if (!user) {
         throw new Error({ error: 'Invalid login credentials' })
     }

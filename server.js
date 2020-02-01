@@ -11,6 +11,7 @@ require("./models/Comment")
 require("./models/User")
 require("./models/Course")
 require("./models/Theory")
+require("./models/Like")
 
 //middleware
 app.use(bodyParser.json())
