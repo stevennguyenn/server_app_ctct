@@ -1,8 +1,9 @@
-const express = require("express");
-require("express-async-errors");
-const app = express();
-const bodyParser = require("body-parser");
-const morgan = require("morgan");
+const express = require("express")
+require("express-async-errors")
+const app = express()
+const bodyParser = require("body-parser")
+const morgan = require("morgan")
+
 //database
 require("./mongo")
 //models
@@ -11,6 +12,7 @@ require("./models/User")
 require("./models/Course")
 require("./models/Theory")
 require("./models/LikeTheory")
+require("./models/Image")
 
 //middleware
 app.use(bodyParser.json())
@@ -19,6 +21,8 @@ app.use(morgan())
 //routes
 app.use("/users", require("./routes/users"))
 app.use("/theories", require("./routes/theories"))
+app.use("/upload", require("./routes/upload"))
+app.use(express.static(__dirname));
 
 //not found router 
 app.use((req, res, next) => {
