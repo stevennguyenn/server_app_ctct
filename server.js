@@ -6,19 +6,17 @@ const morgan = require("morgan");
 //database
 require("./mongo")
 //models
-require("./models/Post")
-require("./models/Comment")
+require("./models/CommentTheory")
 require("./models/User")
 require("./models/Course")
 require("./models/Theory")
-require("./models/Like")
+require("./models/LikeTheory")
 
 //middleware
 app.use(bodyParser.json())
 app.use(morgan())
 
 //routes
-app.use("/posts", require("./routes/posts"))
 app.use("/users", require("./routes/users"))
 app.use("/theories", require("./routes/theories"))
 

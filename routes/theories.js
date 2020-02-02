@@ -2,7 +2,8 @@ const router = require("express").Router()
 const mongoose = require("mongoose")
 const Course = mongoose.model("Course")
 const Theory = mongoose.model("Theory")
-const Like = mongoose.model("Like")
+const LikeTheory = mongoose.model("LikeTheory")
+const CommentTheory = mongoose.model("CommentTheory")
 const auth = require("../middleware/auth")
 
 router.post("/list_course", async (req, res) => {
@@ -30,7 +31,7 @@ router.get("/:idTheory", auth, async (req, res) => {
     const idTheory = req.params.idTheory
     const theory = await Theory.findOne({_id : idTheory})
     var liked = false
-    const isLike = await Like.findOne({ $and: [{id_user: idUser}, {id_theory: idTheory}]}).select("+like")
+    const isLike = await LikeTheory.findOne({ $and: [{id_user: idUser}, {id_theory: idTheory}]}).select("+like")
     if (isLike != null) {
         liked = true
     }
@@ -52,12 +53,60 @@ router.post("/like", auth, async (req, res) => {
         await like.save()
     } else {
 
-        await Like.deleteOne({$and: [{id_user: id_user}, {id_theory: id_theory}]})
+        await LikeTheory.deleteOne({$and: [{id_user: id_user}, {id_theory: id_theory}]})
     }
     res.send({
         status  : true,
         message : "Successful",
     })
 })
+
+router.post("/comments", auth, async (req, res) => {
+    // const id_user = req.user._id;
+    const {id_theory, offset, limit} = req.body
+    const comments = await CommentTheory.find({$and : [{theory: id_theory}, {is_parent: true}]})
+                        .populate({
+                            path: "children",
+                            populate: {
+                                path: "user",
+                                select: "_id name email",
+                            }
+                        })
+                        .populate({
+                            path: "user",
+                            select: "_id name email",
+                        })
+                        .exec()
+    res.send({
+        status  : true,
+        message : "Successful",
+        data: comments
+    })
+})
+
+router.post("/add_comment", auth, async (req, res) => {
+    const id_user = req.user._id;
+    const {id_theory, id_parent, content} = req.body
+    const comment = new CommentTheory()
+    comment.user = id_user
+    comment.content = content
+    comment.theory = id_theory
+    comment.children = []
+    if (id_parent == null) {
+        comment.is_parent = true
+        await comment.save();
+    } else {
+        const parent_comment = await CommentTheory.findOne({$and : [{theory: id_theory}, {user: id_user}]})
+        comment.is_parent = false
+        await comment.save()
+        parent_comment.children.push(comment)
+        await parent_comment.save()
+    }
+    res.send({
+        status  : true,
+        message : "Successful"
+    })
+})
+
 
 module.exports = router;
