@@ -102,9 +102,11 @@ router.post("/add_comment", auth, async (req, res) => {
         parent_comment.children.push(comment)
         await parent_comment.save()
     }
+    const commentPopulate = await CommentTheory.populate(comment, {path: "user", select: "_id name email"})
     res.send({
         status  : true,
-        message : "Successful"
+        message : "Successful",
+        data    : commentPopulate
     })
 })
 
