@@ -96,7 +96,7 @@ router.post("/add_comment", auth, async (req, res) => {
         comment.is_parent = true
         await comment.save();
     } else {
-        const parent_comment = await CommentTheory.findOne({$and : [{theory: id_theory}, {user: id_user}]})
+        const parent_comment = await CommentTheory.findOne({_id: id_parent})
         comment.is_parent = false
         await comment.save()
         parent_comment.children.push(comment)
