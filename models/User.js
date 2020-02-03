@@ -36,6 +36,21 @@ const user_schema = mongoose.Schema({
         required: true,
         minLength: 7
     },
+    learn_at: {
+        type: String,
+    },
+    location_at: {
+        type: String,
+    },
+    join_at: {
+        type: String,
+    },
+    number_video: {
+        type: String,
+    },
+    number_exercise: {
+        type: String,
+    },
     tokens: [{
         token: {
             type: String,

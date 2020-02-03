@@ -61,6 +61,29 @@ router.post("/change_background", auth, async (req, res) => {
     })
 })
 
+router.get("/:idUser", auth, async (req, res) => {
+    const user = await User.findOne({_id: req.params.idUser})
+    res.send({
+        status  : true,
+        message : null,
+        data    : user
+    })
+})
+
+router.post("/change_public_info", auth, async (req, res) => {
+    const user = req.user
+    const {learn_at, location_at, join_at} = req.body
+    user.learn_at = learn_at
+    user.location_at = location_at
+    user.join_at = join_at
+    await user.save()
+    res.send({
+        status  : true,
+        message : null,
+        data    : user
+    })
+})
+
 router.post("/login", async (req, res) => {
     const {email, password} = req.body
     // Search for a user by email and password.
