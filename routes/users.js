@@ -37,6 +37,30 @@ router.post("/change_password", auth, async (req, res) => {
     }
 })
 
+router.post("/change_avatar", auth, async (req, res) => {
+    const user = req.user
+    const {avatar} = req.body.avatar
+    user.img_avatar = avatar
+    await user.save()
+    res.send({
+        status  : true,
+        message : null,
+        data    : user
+    })
+})
+
+router.post("/change_background", auth, async (req, res) => {
+    const user = req.user
+    const {background} = req.body.background
+    user.img_background = background
+    await user.save()
+    res.send({
+        status  : true,
+        message : null,
+        data    : user
+    })
+})
+
 router.post("/login", async (req, res) => {
     const {email, password} = req.body
     // Search for a user by email and password.
@@ -50,6 +74,7 @@ router.post("/login", async (req, res) => {
     }
     const token = await user.generateAuthToken()
     user.token = token
+    await user.save()
     res.status(201).send({
         status  : true,
         message : null,

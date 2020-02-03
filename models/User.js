@@ -23,6 +23,14 @@ const user_schema = mongoose.Schema({
     image_url: {
         type: String
     },
+    img_avatar: {
+        type: String,
+        required: false
+    },
+    img_background: {
+        type: String,
+        required: false
+    },
     password: {
         type: String,
         required: true,
