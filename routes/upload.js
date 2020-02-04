@@ -1,5 +1,7 @@
 const router = require("express").Router()
 const mongoose = require("mongoose")
+const uploadTheory = require("../middleware/upload_theory")
+const uploadExercise = require("../middleware/upload_exercise")
 const Image = mongoose.model("Image")
 const fs = require('fs');
 
@@ -15,4 +17,35 @@ router.post("/images", function(req, res) {
     })
 })
 
+router.post("/theories", uploadTheory.single("file"), function(req, res) {
+    console.log(req.body)
+    console.log(req.file)
+    const image = new Image()
+    image.data = req.file.path
+    image.save(function(err, data) {
+        if(err) throw err
+        res.send({
+            status  : true,
+            message : "Successful",
+            data    : data
+        })
+    })
+})
+
+router.post("/exercises", uploadExercise.single("file"), function(req, res) {
+    console.log(req.body)
+    console.log(req.file)
+    const image = new Image()
+    image.data = req.file.path
+    image.save(function(err, data) {
+        if(err) throw err
+        res.send({
+            status  : true,
+            message : "Successful",
+            data    : data
+        })
+    })
+})
+
 module.exports = router;
+
