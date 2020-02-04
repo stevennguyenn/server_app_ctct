@@ -2,7 +2,7 @@ const fs = require("fs")
 const multer = require("multer")
 
 const storage = multer.diskStorage({
-    destination: "file/theories",
+    destination: "upload/file/theories",
     filename: function(req, file, cb) {
         // console.log(req)
         // console(file.fieldname)
