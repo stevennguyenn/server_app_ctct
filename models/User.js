@@ -36,13 +36,19 @@ const user_schema = mongoose.Schema({
         required: true,
         minLength: 7
     },
+    phone: {
+        type: String,
+        unique: true,
+        validate: value => {
+            if (!validator.isMobilePhone(value, 'vi-VN')) {
+                throw new Error({error: 'Invalid Phone number'})
+            }
+        }
+    },
     learn_at: {
         type: String,
     },
     location_at: {
-        type: String,
-    },
-    join_at: {
         type: String,
     },
     number_video: {

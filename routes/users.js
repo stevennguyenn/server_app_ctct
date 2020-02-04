@@ -41,6 +41,7 @@ router.post("/change_avatar", auth, async (req, res) => {
     const user = req.user
     const {avatar} = req.body.avatar
     user.img_avatar = avatar
+    user.updated_at = Date.now();
     await user.save()
     res.send({
         status  : true,
@@ -53,6 +54,7 @@ router.post("/change_background", auth, async (req, res) => {
     const user = req.user
     const {background} = req.body.background
     user.img_background = background
+    user.updated_at = Date.now();
     await user.save()
     res.send({
         status  : true,
@@ -72,10 +74,11 @@ router.get("/:idUser", auth, async (req, res) => {
 
 router.post("/change_public_info", auth, async (req, res) => {
     const user = req.user
-    const {learn_at, location_at, join_at} = req.body
+    const {learn_at, location_at, phone} = req.body
     user.learn_at = learn_at
     user.location_at = location_at
-    user.join_at = join_at
+    user.phone = phone
+    user.updated_at = Date.now();
     await user.save()
     res.send({
         status  : true,
