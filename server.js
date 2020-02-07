@@ -13,6 +13,7 @@ require("./models/Course")
 require("./models/Theory")
 require("./models/LikeTheory")
 require("./models/Image")
+require("./models/Exercise")
 
 //middleware
 app.use(bodyParser.json())
@@ -24,6 +25,7 @@ app.use(bodyParser.urlencoded({limit: '50mb', extended: true}))
 app.use("/users", require("./routes/users"))
 app.use("/theories", require("./routes/theories"))
 app.use("/upload", require("./routes/upload"))
+app.use("/exercises", require("./routes/exercises"))
 app.use(express.static(__dirname));
 
 //not found router 
