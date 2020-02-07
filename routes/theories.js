@@ -47,7 +47,7 @@ router.post("/like", auth, async (req, res) => {
     const id_user = req.user._id;
     const {id_theory, like} = req.body
     if (like) {
-        const like = Like()
+        const like = LikeTheory()
         like.id_user = id_user
         like.id_theory = id_theory
         await like.save()
