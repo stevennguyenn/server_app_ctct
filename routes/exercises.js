@@ -7,7 +7,7 @@ const Option = mongoose.model("Option")
 
 router.post("/list_exercise", auth, async (req, res) => {
     const {offset, limit, id_course, type} = req.body
-    const exercises = await Exercise.find({$and : [{course: id_course}, {type: type}]}).skip(offset).limit(limit)
+    const exercises = await Exercise.find({$and : [{course: id_course}, {type: type}]}).skip(offset).limit(limit).select("-questions -course")
     res.send({
         status  : true,
         message : null,
@@ -67,7 +67,7 @@ router.post("/create_exercise", auth, async (req, res) => {
     res.send({
         status  : true,
         message : "Create exercise successful",
-        data    : exercise
+        // data    : exercise
     })
 })
 
@@ -78,9 +78,11 @@ router.get("/:id_exercise", auth, async (req, res) => {
                     .populate({
                         path: "questions",
                         populate: {
-                            path: "options"
-                        }
-                    })
+                            path: "options",
+                            select: "_id content"
+                        },
+                        select: "-level"
+                    }).select("-course")
     res.send({
         status  : true,
         message : null,
