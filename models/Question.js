@@ -1,40 +1,31 @@
 const mongoose = require("mongoose")
 
 const exercise_schema = mongoose.Schema({
-    name: {
+    content: {
         type: String,
         required: true
     },
-    course: {
-        type: mongoose.Schema.Types.ObjectId,
-        required: true,
-        ref: "Course"
-    },
+    options: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            required: true,
+            ref: "Option",
+        }
+    ],
     type: {
         type: String,
-        enum: ["exercise", "competition"],
+        enum: ["choice", "fill"],
         required: true
     },
+    // theme: {
+    //     type: mongoose.Schema.Types.ObjectId,
+    //     required: true,
+    //     ref: "Theme"
+    // },
     level: {
         type: String,
         enum : ["easy", "medium", "hard"],
         required: true
-    },
-    theme: {
-        type: String,
-        required: false,
-    },
-    questions: [
-        {
-            type: mongoose.Schema.Types.ObjectId,
-            required: true,
-            ref: "Question"
-        }
-    ],
-    expire_at: {
-        type: Date,
-        default: Date.now,
-        select: false
     },
     created_at: {
         type: Date,
@@ -50,6 +41,6 @@ const exercise_schema = mongoose.Schema({
         type: Number,
         select: false
     }
-})
+}, { versionKey: false })
  
-module.exports = mongoose.model("Exercise", exercise_schema)
+module.exports = mongoose.model("Question", exercise_schema)

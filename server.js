@@ -14,6 +14,9 @@ require("./models/Theory")
 require("./models/LikeTheory")
 require("./models/Image")
 require("./models/Exercise")
+require("./models/Option")
+require("./models/Question")
+require("./models/Theme")
 
 //middleware
 app.use(bodyParser.json())
