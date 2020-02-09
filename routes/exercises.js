@@ -16,12 +16,13 @@ router.post("/list_exercise", auth, async (req, res) => {
 })
 
 router.post("/add_exercise", auth, async (req, res) => {
-    const {name, id_course, type, level, theme} = req.body
+    const {name, id_course, type, level, theme, time} = req.body
     const exercise = new Exercise()
     exercise.name = name
     exercise.course = id_course
     exercise.type = type
     exercise.level = level
+    exercise.time = time
     // exercise.theme = theme
     await exercise.save()
     res.send({
@@ -32,12 +33,13 @@ router.post("/add_exercise", auth, async (req, res) => {
 })
 
 router.post("/create_question", auth, async (req, res) => {
-    const {content, options, type, theme, level} = req.body
+    const {content, options, type, theme, level, answer} = req.body
     let question = new Question()
     question.content = content
     question.type = type
     question.theme = theme
     question.level = level
+    question.answer = answer
     var arrOption = [];
     for (const option of options) {
         console.log(option)

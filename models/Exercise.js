@@ -31,6 +31,10 @@ const exercise_schema = mongoose.Schema({
             ref: "Question"
         }
     ],
+    time: {
+        type: Number,
+        required: true
+    },
     expire_at: {
         type: Date,
         default: Date.now,

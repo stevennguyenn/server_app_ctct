@@ -17,6 +17,11 @@ const exercise_schema = mongoose.Schema({
         enum: ["choice", "fill"],
         required: true
     },
+    answer: {
+        type: String,
+        required: false,
+        select: false
+    },
     // theme: {
     //     type: mongoose.Schema.Types.ObjectId,
     //     required: true,
