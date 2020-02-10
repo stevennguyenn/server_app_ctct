@@ -24,7 +24,7 @@ const result_question_schema = mongoose.Schema({
     },
     user_answer: {
         type: String,
-        required: true
+        required: false
     },
     is_correct: {
         type: Boolean,
