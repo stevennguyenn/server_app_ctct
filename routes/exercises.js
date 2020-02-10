@@ -4,6 +4,8 @@ const auth = require("../middleware/auth")
 const Exercise = mongoose.model("Exercise")
 const Question = mongoose.model("Question")
 const Option = mongoose.model("Option")
+const Result = mongoose.model("Result")
+const ResultQuestion = mongoose.model("ResultQuestion")
 
 router.post("/list_exercise", auth, async (req, res) => {
     const {offset, limit, id_course, type} = req.body
@@ -73,7 +75,6 @@ router.post("/create_exercise", auth, async (req, res) => {
     })
 })
 
-
 router.get("/:id_exercise", auth, async (req, res) => {
     const id_exercise = req.params.id_exercise
     const exercise = await Exercise.findOne({_id: id_exercise})
@@ -89,6 +90,75 @@ router.get("/:id_exercise", auth, async (req, res) => {
         status  : true,
         message : null,
         data    : exercise
+    })
+})
+
+
+router.post("/submit_exercise", auth, async (req, res) => {
+    const {id_exercise, answer, time} = req.body
+    const exercise = await Exercise.findOne({_id: id_exercise})
+                    .populate({
+                        path: "questions",
+                        populate: {
+                            path: "options"
+                        }
+                    })
+    var point = 0
+    const list_question = exercise.questions
+    var result_questions = [];
+    for (var i = 0; i < list_question.length; i ++) {
+        const userAnswer = new ResultQuestion();
+        userAnswer.content = list_question[i].content
+        userAnswer.options = list_question[i].options
+        userAnswer.type = list_question[i].type
+        userAnswer.level = list_question[i].level
+        userAnswer.user_answer = answer[i].answer
+        // console.log(list_question[i].type)
+        if (list_question[i].type == "fill") {
+            console.log(list_question[i])
+            if (answer[i].answer == list_question[i].answer) {
+                point += 1;
+                userAnswer.is_correct = true
+                continue;
+            }
+            // console.log(list_question[i].answer)
+            userAnswer.answer = list_question[i].answer
+        } else {
+            for (const option of list_question[i].options) {
+                if (option.is_correct == true) {
+                    userAnswer.answer = option._id
+                    // console.log(option._id)
+                    if (option.id == answer[i].answer) {
+                        point += 1;
+                        userAnswer.is_correct = true
+                        continue;
+                    }
+                }
+            }
+        }
+        // userAnswer.answer = "dadasdsa"
+        // console.log(userAnswer.answer)
+        result_questions.push(userAnswer._id);
+        await userAnswer.save()
+    }
+    const result = new Result()
+    result.name = exercise.name
+    result.user = req.user._id
+    result.exercise = exercise._id
+    result.point = point
+    result.time = time
+    result.result_questions = result_questions
+    await result.save()
+    const resultFull = await Result.findOne({_id: result._id}).populate({
+        path: "result_questions",
+        populate: {
+            path: "options"
+        }
+    })
+    res.send({
+        status  : true,
+        message : null,
+        data    : resultFull
     })
 })
 

@@ -17,6 +17,8 @@ require("./models/Exercise")
 require("./models/Option")
 require("./models/Question")
 require("./models/Theme")
+require("./models/Result")
+require("./models/ResultQuestion")
 
 //middleware
 app.use(bodyParser.json())
