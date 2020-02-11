@@ -39,7 +39,7 @@ router.post("/change_password", auth, async (req, res) => {
 
 router.post("/change_avatar", auth, async (req, res) => {
     const user = req.user
-    const {avatar} = req.body.avatar
+    const {avatar} = req.body
     user.img_avatar = avatar
     user.updated_at = Date.now();
     await user.save()
@@ -52,7 +52,7 @@ router.post("/change_avatar", auth, async (req, res) => {
 
 router.post("/change_background", auth, async (req, res) => {
     const user = req.user
-    const {background} = req.body.background
+    const {background} = req.body
     user.img_background = background
     user.updated_at = Date.now();
     await user.save()

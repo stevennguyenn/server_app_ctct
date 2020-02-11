@@ -31,6 +31,7 @@ app.use("/users", require("./routes/users"))
 app.use("/theories", require("./routes/theories"))
 app.use("/upload", require("./routes/upload"))
 app.use("/exercises", require("./routes/exercises"))
+app.use("/results", require("./routes/results"))
 app.use(express.static(__dirname));
 
 //not found router 

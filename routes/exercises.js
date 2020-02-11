@@ -147,6 +147,8 @@ router.post("/submit_exercise", auth, async (req, res) => {
     result.exercise = exercise._id
     result.point = point
     result.time = time
+    result.diamond = point * 10;
+    result.experience = point * 100;
     result.result_questions = result_questions
     await result.save()
     const resultFull = await Result.findOne({_id: result._id}).populate({
