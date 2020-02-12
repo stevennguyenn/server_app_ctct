@@ -19,6 +19,10 @@ const course_schema = mongoose.Schema({
     updated_at: {
         type: Date,
         default: Date.now
+    },
+    __v: {
+        type: Number,
+        select: false
     }
 })
  

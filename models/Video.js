@@ -6,6 +6,7 @@ const video_schema = mongoose.Schema({
         required: true
     },
     type: {
+        type: String,
         enum: ["youtube", "mp4"],
         required: true
     },
@@ -17,7 +18,7 @@ const video_schema = mongoose.Schema({
         type: Number,
         required: true
     },
-    video_course: {
+    course: {
         type: mongoose.Schema.Types.ObjectId,
         required: true,
         ref: "Course"
@@ -33,6 +34,10 @@ const video_schema = mongoose.Schema({
     updated_at: {
         type: Date,
         default: Date.now
+    },
+    __v: {
+        type: Number,
+        select: false
     }
 })
  
