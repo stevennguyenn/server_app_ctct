@@ -9,6 +9,19 @@ const video_schema = mongoose.Schema({
         enum: ["youtube", "mp4"],
         required: true
     },
+    img_background: {
+        type: String,
+        required: true
+    },
+    time: {
+        type: Number,
+        required: true
+    },
+    video_course: {
+        type: mongoose.Schema.Types.ObjectId,
+        required: true,
+        ref: "Course"
+    },
     url: {
         type: String,
         required: true,

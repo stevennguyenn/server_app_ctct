@@ -19,6 +19,7 @@ require("./models/Question")
 require("./models/Theme")
 require("./models/Result")
 require("./models/ResultQuestion")
+require("./models/Video")
 
 //middleware
 app.use(bodyParser.json())
@@ -32,6 +33,7 @@ app.use("/theories", require("./routes/theories"))
 app.use("/upload", require("./routes/upload"))
 app.use("/exercises", require("./routes/exercises"))
 app.use("/results", require("./routes/results"))
+app.use("/videos", require("./routes/videos"))
 app.use(express.static(__dirname));
 
 //not found router 

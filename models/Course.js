@@ -5,6 +5,13 @@ const course_schema = mongoose.Schema({
         type: String,
         required: true
     },
+    list_video: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            required: true,
+            ref: "Video"
+        }
+    ],
     created_at: {
         type: Date,
         default: Date.now
@@ -12,10 +19,6 @@ const course_schema = mongoose.Schema({
     updated_at: {
         type: Date,
         default: Date.now
-    }, 
-    videos: {
-        type: mongoose.Schema.Types.ObjectId,
-        select: false
     }
 })
  
