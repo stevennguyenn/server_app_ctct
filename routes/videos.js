@@ -67,6 +67,19 @@ router.get("/:id_video", auth, async function(req, res) {
     })
 })
 
+router.post("/video_course", async function(req, res) {
+    const {offset, limit, id_theory} = req.body
+    const list_video = await Video.find({course: id_theory}).skip(offset).limit(limit).populate({
+        path: "author",
+        select: "_id name email img_avatar"
+    })
+    res.send({
+        status  : true,
+        message : "Successful",
+        data    : list_video
+    })
+})
+
 router.post("/like", auth, async function(req, res) {
     const id_user = req.user._id;
     const {id_video, like} = req.body
@@ -83,6 +96,8 @@ router.post("/like", auth, async function(req, res) {
         message : "Successful",
     })
 })
+
+
 
 module.exports = router;
 
