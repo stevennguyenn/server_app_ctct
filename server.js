@@ -20,6 +20,7 @@ require("./models/Theme")
 require("./models/Result")
 require("./models/ResultQuestion")
 require("./models/Video")
+require("./models/LikeVideo")
 
 //middleware
 app.use(bodyParser.json())

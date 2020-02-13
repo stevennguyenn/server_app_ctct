@@ -27,6 +27,27 @@ const video_schema = mongoose.Schema({
         type: String,
         required: true,
     },
+    author: {
+        type: mongoose.Schema.Types.ObjectId,
+        required: true,
+        ref: "User"
+    },
+    description: {
+        type: String,
+        required: true,
+    },
+    user_seen: {
+        type: Number,
+        required: true
+    },
+    is_like: {
+        type: Boolean,
+        required: false
+    },
+    document: {
+        type: String,
+        required: false,
+    },
     created_at: {
         type: Date,
         default: Date.now

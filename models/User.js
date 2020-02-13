@@ -31,6 +31,10 @@ const user_schema = mongoose.Schema({
         type: String,
         required: false
     },
+    teacher: {
+        type: String,
+        required: false
+    },
     password: {
         type: String,
         required: true,
