@@ -21,6 +21,7 @@ require("./models/Result")
 require("./models/ResultQuestion")
 require("./models/Video")
 require("./models/LikeVideo")
+require("./models/CommentVideo")
 
 //middleware
 app.use(bodyParser.json())

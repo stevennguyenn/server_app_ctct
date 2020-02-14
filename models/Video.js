@@ -38,7 +38,8 @@ const video_schema = mongoose.Schema({
     },
     user_seen: {
         type: Number,
-        required: true
+        required: true,
+        default: 0
     },
     is_like: {
         type: Boolean,
