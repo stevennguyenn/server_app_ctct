@@ -6,27 +6,18 @@ const uploadImage = require("../middleware/upload_image")
 const Image = mongoose.model("Image")
 const fs = require('fs');
 
-router.post("/images", function(req, res) {
-    const {data, name} = req.body
-    const path = "upload/images/" + name + Date.now() + ".jpg"
-    console.log(data)
-    const base64Data = data.replace(/^data:([A-Za-z-+/]+);base64,/, '');
-    fs.writeFileSync(path, base64Data,  {encoding: 'base64'})
-    res.send({
-        status  : true,
-        message : "Successful",
-        data    : path
-    })
-})
-
-router.post("/image", uploadImage.single("data"), function(req, res, next) {
+router.post("/images", uploadImage.single("data"), function(req, res, next) {
     const file = req.file
     if (!file) {
         const error = new Error('Please upload a file')
         error.httpStatusCode = 400
         return next(error)
     }
-    res.send(file.path)
+    res.send({
+        status  : true,
+        message : "Successful",
+        data    : file.path
+    })
 })
 
 router.post("/theories", uploadTheory.single("file"), function(req, res) {
