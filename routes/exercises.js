@@ -17,6 +17,21 @@ router.post("/list_exercise", auth, async (req, res) => {
     })
 })
 
+router.post("/list_exercise_competition", auth, async (req, res) => {
+    const {offset, limit, id_course, type} = req.body
+    var exercises = []
+    if (type == "") {
+        exercises = await Exercise.find({$and : [{course: id_course}, {$or: [{type: "middle"}, {type: "end"}]}]}).skip(offset).limit(limit).select("-questions -course")
+    } else {
+        exercises = await Exercise.find({$and : [{course: id_course}, {type: type}]}).skip(offset).limit(limit).select("-questions -course")
+    }
+    res.send({
+        status  : true,
+        message : null,
+        data    : exercises
+    })
+})
+
 router.post("/add_exercise", auth, async (req, res) => {
     const {name, id_course, type, level, theme, time} = req.body
     const exercise = new Exercise()

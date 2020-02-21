@@ -12,7 +12,7 @@ const exercise_schema = mongoose.Schema({
     },
     type: {
         type: String,
-        enum: ["exercise", "competition"],
+        enum: ["exercise", "middle", "end"],
         required: true
     },
     level: {
