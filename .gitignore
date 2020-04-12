@@ -1,3 +1,6 @@
+# Visual studio code
+.vscode/launch.json
+
 # Logs
 logs
 *.log

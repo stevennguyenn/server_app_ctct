@@ -1,3 +1,4 @@
+const _ = require('lodash')
 const router = require("express").Router()
 const mongoose = require("mongoose")
 const Course = mongoose.model("Course")
@@ -19,6 +20,19 @@ router.post("/list_course", async (req, res) => {
 router.post("/list_theory", async (req, res) => {
     const {id_course, offset, limit} = req.body
     const theories = await Theory.find({course : id_course}).populate().skip(offset).limit(limit)
+    res.send({
+        status  : true,
+        message : null,
+        data    : theories
+    })
+})
+
+
+router.post("/list_theory_find", async (req, res) => {
+    const {id_course, offset, limit, text} = req.body
+    let theories0 = await Theory.find({course : id_course, name: {$regex: new RegExp('^' + text, 'i')}}).populate().skip(offset).limit(limit)
+    let theories1 = await Theory.find({course : id_course, name: {$regex: new RegExp('.' + text, 'i')}}).populate().skip(offset).limit(limit)
+    const theories = _.uniqBy(_.flatten([theories0, theories1]), 'name')
     res.send({
         status  : true,
         message : null,
