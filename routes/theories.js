@@ -28,11 +28,14 @@ router.post("/list_theory", async (req, res) => {
 })
 
 
-router.post("/list_theory_find", async (req, res) => {
+router.post("/list_theory/search", async (req, res) => {
     const {id_course, offset, limit, text} = req.body
-    let theories0 = await Theory.find({course : id_course, name: {$regex: new RegExp('^' + text, 'i')}}).populate().skip(offset).limit(limit)
-    let theories1 = await Theory.find({course : id_course, name: {$regex: new RegExp('.' + text, 'i')}}).populate().skip(offset).limit(limit)
-    const theories = _.uniqBy(_.flatten([theories0, theories1]), 'name')
+    let theories = await Theory.find({course : id_course, name: {$regex: new RegExp(text, 'i')}}).populate().skip(offset).limit(limit)
+    theories.sort((a, b) => {
+        if (a.name.toLocaleLowerCase().lastIndexOf(text.toLocaleLowerCase(), 0) === 0)  {return -1}
+        if (b.name.toLocaleLowerCase().lastIndexOf(text.toLocaleLowerCase(), 0) === 0)  {return 1}
+        return 0;
+    })
     res.send({
         status  : true,
         message : null,
