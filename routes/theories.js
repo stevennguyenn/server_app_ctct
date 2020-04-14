@@ -26,6 +26,22 @@ router.post("/list_theory", async (req, res) => {
     })
 })
 
+
+router.post("/list_theory/search", async (req, res) => {
+    const {id_course, offset, limit, text} = req.body
+    let theories = await Theory.find({course : id_course, name: {$regex: new RegExp(text, 'i')}}).populate().skip(offset).limit(limit)
+    theories.sort((a, b) => {
+        if (a.name.toLocaleLowerCase().lastIndexOf(text.toLocaleLowerCase(), 0) === 0)  {return -1}
+        if (b.name.toLocaleLowerCase().lastIndexOf(text.toLocaleLowerCase(), 0) === 0)  {return 1}
+        return 0;
+    })
+    res.send({
+        status  : true,
+        message : null,
+        data    : theories
+    })
+})
+
 router.get("/:idTheory", auth, async (req, res) => {
     const idUser = req.user._id;
     const idTheory = req.params.idTheory
