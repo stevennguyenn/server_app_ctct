@@ -1,4 +1,3 @@
-const _ = require('lodash')
 const router = require("express").Router()
 const mongoose = require("mongoose")
 const Course = mongoose.model("Course")
