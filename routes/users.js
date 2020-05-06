@@ -20,7 +20,6 @@ router.post("/change_password", auth, async (req, res) => {
     const {old_password, new_password} = req.body
     const isPasswordMatch = await bcrypt.compare(old_password, password)
     if (isPasswordMatch == true) {
-        user.tokens = []
         user.token = ""
         console.log(new_password)
         user.password = new_password

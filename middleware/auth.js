@@ -8,7 +8,7 @@ const auth = async (req, res, next) => {
     const token = req.header("Authorization").replace("Bearer ", "")
     console.log(token)
     const data = jwt.verify(token, process.env.JWT_KEY)
-    const user = await User.findOne({_id : data._id, 'tokens.token': token})
+    const user = await User.findOne({_id : data._id, 'token': token})
     if (!user) {
         throw new Error("Invalid Token")
     }
