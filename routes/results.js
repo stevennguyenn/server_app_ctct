@@ -47,7 +47,7 @@ router.post("/history_date_make_exercise", auth, async (req, res) => {
 
 router.post("/list_result", auth, async (req, res) => {
     const {offset, limit, id_course, type} = req.body
-    const results = await Result.find({$and : [{user: req.user._id}, {type: type}, {course: id_course}]}).skip(offset).limit(limit)
+    const results = await Result.find({$and : [{user: req.user._id}, {type: type}, {course: id_course}]}).skip(offset).limit(limit).select("_id created_at name point time")
     res.send({
         status  : true,
         message : null,
@@ -59,9 +59,9 @@ router.post("/list_result_competition", auth, async (req, res) => {
     const {offset, limit, id_course, type} = req.body
     var results = []
     if (type == "") {
-        results = await Exercise.find({$and : [{course: id_course}, {$or: [{type: "middle"}, {type: "end"}]}, {user: req.user._id}]}).skip(offset).limit(limit)
+        results = await Result.find({$and : [{course: id_course}, {$or: [{type: "middle"}, {type: "end"}]}, {user: req.user._id}]}).skip(offset).limit(limit).select("_id created_at name point time")
     } else {
-        results = await Exercise.find({$and : [{course: id_course}, {type: type}, {user: req.user._id}]}).skip(offset).limit(limit)
+        results = await Result.find({$and : [{course: id_course}, {type: type}, {user: req.user._id}]}).skip(offset).limit(limit).select("_id created_at name point time")
     }
     res.send({
         status  : true,
@@ -69,6 +69,18 @@ router.post("/list_result_competition", auth, async (req, res) => {
         data    : results
     })
 })
+
+router.get("/:id_result", auth, async (req, res) => {
+    const id_result = req.params.id_result
+    const result = await Result.findOne({_id: id_result})
+                    .populate("questions").select("-course")
+    res.send({
+        status  : true,
+        message : null,
+        data    : result
+    })
+})
+
 
 
 module.exports = router;
