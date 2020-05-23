@@ -4,7 +4,6 @@ const auth = require("../middleware/auth")
 const Exercise = mongoose.model("Exercise")
 const Question = mongoose.model("Question")
 const Result = mongoose.model("Result")
-const ResultQuestion = mongoose.model("ResultQuestion")
 
 router.post("/list_exercise", auth, async (req, res) => {
     const {offset, limit, id_course, type} = req.body
@@ -109,28 +108,22 @@ router.get("/:id_exercise", auth, async (req, res) => {
 
 router.post("/submit_exercise", auth, async (req, res) => {
     const {id_exercise, answer, time} = req.body
-    const exercise = await Exercise.findOne({_id: id_exercise})
-                    .populate({
-                        path: "questions",
-                        populate: {
-                            path: "options"
-                        }
-                    })
+    const exercise = await Exercise.findOne({_id: id_exercise}).populate("questions")
     var point = 0
     const list_question = exercise.questions
     var result_questions = [];
     for (var i = 0; i < list_question.length; i ++) {
-        const userAnswer = new ResultQuestion();
-        userAnswer.content = list_question[i].content
-        userAnswer.options = list_question[i].options
-        userAnswer.type = list_question[i].type
-        userAnswer.level = list_question[i].level
-        userAnswer.user_answer = answer[i].answer
+        var userAnswer = {};
+        userAnswer["content"] = list_question[i].content
+        userAnswer["options"] = list_question[i].options
+        userAnswer["type"] = list_question[i].type
+        userAnswer["level"] = list_question[i].level
+        userAnswer["user_answer"] = answer[i].answer
         if (list_question[i].type == "fill") {
             console.log(list_question[i])
             if (answer[i].answer == list_question[i].answer) {
                 point += 1
-                userAnswer.is_correct = true
+                userAnswer["is_correct"] = true
                 continue
             }
             userAnswer.answer = list_question[i].answer
@@ -140,14 +133,13 @@ router.post("/submit_exercise", auth, async (req, res) => {
                     userAnswer.answer = option._id
                     if (option.id == answer[i].answer) {
                         point += 1
-                        userAnswer.is_correct = true
+                        userAnswer["is_correct"] = true
                         continue
                     }
                 }
             }
         }
-        result_questions.push(userAnswer._id)
-        await userAnswer.save()
+        result_questions.push(userAnswer)
     }
     const result = new Result()
     result.name = exercise.name
@@ -163,16 +155,10 @@ router.post("/submit_exercise", auth, async (req, res) => {
     await result.save()
     exercise.user.push(req.user._id)
     await exercise.save()
-    const resultFull = await Result.findOne({_id: result._id}).populate({
-        path: "result_questions",
-        populate: {
-            path: "options"
-        }
-    })
     res.send({
         status  : true,
         message : null,
-        data    : resultFull
+        data    : result
     })
 })
 

@@ -35,9 +35,50 @@ const result_schema = mongoose.Schema({
     },
     result_questions: [
         {
-            type: mongoose.Schema.Types.ObjectId,
-            required: true,
-            ref: "ResultQuestion"
+            content: {
+                type: String,
+                required: true
+            },
+            options: [
+                {
+                    _id: {
+                        type: Number,
+                        required: true
+                    },
+                    content: {
+                        type: String,
+                        required: true
+                    },
+                    is_correct: {
+                        type: Boolean,
+                        required: true
+                    },
+                }
+            ],
+            type: {
+                type: String,
+                enum: ["choice", "fill"],
+                required: true
+            },
+            answer: {
+                type: String,
+                required: true,
+                default: ""
+            },
+            user_answer: {
+                type: String,
+                required: false
+            },
+            is_correct: {
+                type: Boolean,
+                required: true,
+                default: false
+            },
+            level: {
+                type: String,
+                enum : ["easy", "medium", "hard"],
+                required: true
+            },
         }
     ],
     diamond: {
