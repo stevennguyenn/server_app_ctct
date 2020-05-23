@@ -73,14 +73,11 @@ router.post("/list_result_competition", auth, async (req, res) => {
 router.get("/:id_result", auth, async (req, res) => {
     const id_result = req.params.id_result
     const result = await Result.findOne({_id: id_result})
-                    .populate("questions").select("-course")
     res.send({
         status  : true,
         message : null,
         data    : result
     })
 })
-
-
 
 module.exports = router;
