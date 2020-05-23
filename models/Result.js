@@ -10,10 +10,20 @@ const result_schema = mongoose.Schema({
         required: true,
         ref: "User"
     },
+    course: {
+        type: mongoose.Schema.Types.ObjectId,
+        required: true,
+        ref: "Course"
+    },
     exercise: {
         type: mongoose.Schema.Types.ObjectId,
         required: true,
         ref: "Exercise"
+    },
+    type: {
+        type: String,
+        enum: ["exercise", "middle", "end"],
+        required: true
     },
     point: {
         type: Number,
@@ -41,12 +51,12 @@ const result_schema = mongoose.Schema({
     created_at: {
         type: Date,
         default: Date.now,
-        select: false
+        select: true
     },
     updated_at: {
         type: Date,
         default: Date.now,
-        select: false
+        select: true
     },
     __v: {
         type: Number,

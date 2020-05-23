@@ -7,9 +7,18 @@ const exercise_schema = mongoose.Schema({
     },
     options: [
         {
-            type: mongoose.Schema.Types.ObjectId,
-            required: true,
-            ref: "Option",
+            _id: {
+                type: Number,
+                required: true
+            },
+            content: {
+                type: String,
+                required: true
+            },
+            is_correct: {
+                type: Boolean,
+                required: true
+            },
         }
     ],
     type: {

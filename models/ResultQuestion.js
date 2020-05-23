@@ -5,13 +5,13 @@ const result_question_schema = mongoose.Schema({
         type: String,
         required: true
     },
-    options: [
-        {
-            type: mongoose.Schema.Types.ObjectId,
-            required: true,
-            ref: "Option",
-        }
-    ],
+    // options: [
+    //     {
+    //         type: mongoose.Schema.Types.ObjectId,
+    //         required: true,
+    //         ref: "Option",
+    //     }
+    // ],
     type: {
         type: String,
         enum: ["choice", "fill"],
