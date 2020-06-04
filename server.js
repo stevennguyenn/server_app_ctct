@@ -8,7 +8,7 @@ const morgan = require("morgan")
 require("./mongo")
 //models
 require("./models/CommentTheory")
-require("./models/User")
+require("./models/user/User")
 require("./models/Course")
 require("./models/Theory")
 require("./models/LikeTheory")

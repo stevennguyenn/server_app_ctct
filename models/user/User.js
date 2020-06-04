@@ -66,10 +66,6 @@ const user_schema = mongoose.Schema({
     },
     token: {
         type: String,
-        required: true
-    },
-    token: {
-        type: String,
     },
     created_at: {
         type: Date,

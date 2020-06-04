@@ -55,6 +55,16 @@ router.post("/list_result", auth, async (req, res) => {
     })
 })
 
+router.post("/top_point_user", auth, async (req, res) => {
+    const {id_user} = req.body
+    const results = await Result.find({user: id_user}).sort({point : -1, time: 1}).select("_id created_at name point time course").limit(10).populate({path : "course", select : "name"});
+    res.send({
+        status  : true,
+        message : null,
+        data    : results
+    })
+})
+
 router.post("/list_result_competition", auth, async (req, res) => {
     const {offset, limit, id_course, type} = req.body
     var results = []
