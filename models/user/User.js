@@ -67,6 +67,9 @@ const user_schema = mongoose.Schema({
     token: {
         type: String,
     },
+    fcm_token: {
+        type: String,
+    },
     created_at: {
         type: Date,
         default: Date.now

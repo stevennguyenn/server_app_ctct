@@ -107,4 +107,25 @@ router.post("/login", async (req, res) => {
     })
 })
 
+router.post("/update_fcm_token", auth, async (req, res) => {
+    const {fcm_token} = req.body;
+    user.fcm_token = fcm_token;
+    await user.save()
+    res.status(201).send({
+        status  : true,
+        message : "Success",
+    })
+})
+
+router.post("/logout", auth, async (req, res) => {
+    user.fcm_token = "";
+    user.token = "";
+    await user.save()
+    res.status(201).send({
+        status  : true,
+        message : "Success",
+    })
+})
+
+
 module.exports = router;
