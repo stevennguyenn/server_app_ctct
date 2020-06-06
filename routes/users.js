@@ -120,7 +120,8 @@ router.post("/update_fcm_token", auth, async (req, res) => {
 })
 
 router.post("/logout", auth, async (req, res) => {
-    user.fcm_token = "";
+    const user = req.user;
+    req.user.fcm_token = "";
     user.token = "";
     await user.save()
     res.status(201).send({
