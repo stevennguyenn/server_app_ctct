@@ -70,6 +70,10 @@ const user_schema = mongoose.Schema({
     fcm_token: {
         type: String,
     },
+    device_type: {
+        type: String,
+        enum : ["android", "iOS"]
+    },
     created_at: {
         type: Date,
         default: Date.now

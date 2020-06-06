@@ -87,7 +87,7 @@ router.post("/change_public_info", auth, async (req, res) => {
 })
 
 router.post("/login", async (req, res) => {
-    const {email, password} = req.body
+    const {email, password, device_type, fcm_token} = req.body
     // Search for a user by email and password.
     const user = await (User.findOne({ email}))
     if (!user) {
@@ -98,7 +98,9 @@ router.post("/login", async (req, res) => {
         throw new Error({ error: 'Invalid login credentials' })
     }
     const token = await user.generateAuthToken()
+    user.device_type = device_type
     user.token = token
+    user.fcm_token = fcm_token
     await user.save()
     res.status(201).send({
         status  : true,
