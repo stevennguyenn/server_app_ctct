@@ -3,6 +3,7 @@ const mongoose = require("mongoose")
 const auth = require("../middleware/auth")
 const Result = mongoose.model("Result")
 const User = mongoose.model("User")
+var ObjectID = require("mongodb").ObjectID
 
 router.post("/rank_result", auth, async (req, res) => {
     const {offset, limit, id_exercise} = req.body
@@ -92,19 +93,40 @@ router.get("/:id_result", auth, async (req, res) => {
 })
 
 router.post("/top_point", async (req, res) => {
-    const {offset, limit} = req.body;
-    const result = await Result.aggregate([
-        { $group: 
-            { _id : "$user", point : { $sum: "$point" }, time: { $sum: "$time"}}
-        }])
-        .sort({point: -1, time: 1})
-        .skip(offset).limit(limit)
-    await User.populate(result, {path: "_id", select: "name img_avatar"})
-    res.send({
-        status  : true,
-        message : null,
-        data    : result
-    })
+    const {offset, limit, id_course} = req.body;
+    console.log(id_course)
+    if (id_course == null) {
+        const result = await Result.aggregate([
+            { $group: 
+                { _id : "$user", point : { $sum: "$point" }, time: { $sum: "$time"}}
+            }])
+            .sort({point: -1, time: 1})
+            .skip(offset).limit(limit)
+        await User.populate(result, {path: "_id", select: "name img_avatar"})
+        res.send({
+            status  : true,
+            message : null,
+            data    : result
+        })
+    } else {
+        const result = await Result.aggregate([
+            {
+                $match: {
+                    "course" : ObjectID(id_course)
+                }
+            },
+            { $group: 
+                { _id : "$user", point : { $sum: "$point" }, time: { $sum: "$time"}}
+            }])
+            .sort({point: -1, time: 1})
+            .skip(offset).limit(limit)
+        await User.populate(result, {path: "_id", select: "name img_avatar"})
+        res.send({
+            status  : true,
+            message : null,
+            data    : result
+        })
+    }
 });
 
 module.exports = router;
