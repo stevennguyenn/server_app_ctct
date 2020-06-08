@@ -7,7 +7,7 @@ const morgan = require("morgan")
 //database
 require("./mongo")
 //models
-require("./models/CommentTheory")
+require("./models/Comment")
 require("./models/user/User")
 require("./models/Course")
 require("./models/Theory")
@@ -19,7 +19,6 @@ require("./models/Theme")
 require("./models/result/Result")
 require("./models/Video")
 require("./models/LikeVideo")
-require("./models/CommentVideo")
 require("./models/notification/Notification")
 
 //middleware

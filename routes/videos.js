@@ -3,7 +3,7 @@ const mongoose = require("mongoose")
 const Course = mongoose.model("Course")
 const Video = mongoose.model("Video")
 const LikeVideo = mongoose.model("LikeVideo")
-const CommentVideo = mongoose.model("CommentVideo")
+const Comment = mongoose.model("Comment")
 const auth = require("../middleware/auth")
 
 router.post("/list_video_course", async function(req, res) {
@@ -104,7 +104,7 @@ router.post("/like", auth, async function(req, res) {
 
 router.post("/comments", auth, async (req, res) => {
     const {id_video, offset, limit} = req.body
-    const comments = await CommentVideo.find({$and : [{video: id_video}, {is_parent: true}]})
+    const comments = await Comment.find({$and : [{video: id_video}, {is_parent: true}]})
                         .skip(offset).limit(limit)
                         .populate({
                             path: "children",
@@ -127,7 +127,7 @@ router.post("/comments", auth, async (req, res) => {
 router.post("/add_comment", auth, async (req, res) => {
     const id_user = req.user._id;
     const {id_video, id_parent, content} = req.body
-    const comment = new CommentVideo()
+    const comment = new Comment()
     comment.user = id_user
     comment.content = content
     comment.video = id_video
@@ -136,13 +136,13 @@ router.post("/add_comment", auth, async (req, res) => {
         comment.is_parent = true
         await comment.save();
     } else {
-        const parent_comment = await CommentVideo.findOne({_id: id_parent})
+        const parent_comment = await Comment.findOne({_id: id_parent})
         comment.is_parent = false
         await comment.save()
         parent_comment.children.push(comment)
         await parent_comment.save()
     }
-    const commentPopulate = await CommentVideo.populate(comment, {path: "user", select: "_id name email img_avatar"})
+    const commentPopulate = await Commentpopulate(comment, {path: "user", select: "_id name email img_avatar"})
     res.send({
         status  : true,
         message : "Successful",

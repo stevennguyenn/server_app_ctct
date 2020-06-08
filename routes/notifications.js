@@ -3,7 +3,7 @@ const mongoose = require("mongoose")
 const auth = require("../middleware/auth")
 const Notification = mongoose.model("Notification")
 const admin = require('firebase-admin')
-var serviceAccount = require("/Users/macbookair/Desktop/server_app_ctct/ctct-16b49-firebase-adminsdk-8lesv-5eba9083a5.json");
+var serviceAccount = require("/Users/chaunguyen/Desktop/server_app_ctct/ctct-16b49-firebase-adminsdk-8lesv-5eba9083a5.json");
 
 admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),

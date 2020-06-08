@@ -41,6 +41,10 @@ const exercise_schema = mongoose.Schema({
         enum : ["easy", "medium", "hard"],
         required: true
     },
+    explanation: {
+        type: String,
+        required: false,
+    }, 
     created_at: {
         type: Date,
         default: Date.now,

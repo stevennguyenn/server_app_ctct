@@ -3,6 +3,7 @@ const mongoose = require("mongoose")
 const auth = require("../middleware/auth")
 const Result = mongoose.model("Result")
 const User = mongoose.model("User")
+const Comment = mongoose.model("Comment")
 var ObjectID = require("mongodb").ObjectID
 
 router.post("/rank_result", auth, async (req, res) => {
@@ -127,6 +128,54 @@ router.post("/top_point", async (req, res) => {
             data    : result
         })
     }
-});
+})
+
+router.post("/comments", auth, async (req, res) => {
+    // const id_user = req.user._id;
+    const {id_question, offset, limit} = req.body
+    const comments = await Comment.find({$and : [{question: id_question}, {is_parent: true}]})
+                        .populate({
+                            path: "children",
+                            populate: {
+                                path: "user",
+                                select: "_id name email",
+                            }
+                        })
+                        .populate({
+                            path: "user",
+                            select: "_id name email",
+                        }).skip(offset).limit(limit)
+    res.send({
+        status  : true,
+        message : "Successful",
+        data: comments
+    })
+})
+
+router.post("/add_comment", auth, async (req, res) => {
+    const id_user = req.user._id;
+    const {id_question, id_parent, content} = req.body
+    const comment = new Comment()
+    comment.user = id_user
+    comment.content = content
+    comment.question = id_question
+    comment.children = []
+    if (id_parent == null) {
+        comment.is_parent = true
+        await comment.save();
+    } else {
+        const parent_comment = await Comment.findOne({_id: id_parent})
+        comment.is_parent = false
+        await comment.save()
+        parent_comment.children.push(comment)
+        await parent_comment.save()
+    }
+    const commentPopulate = await Comment.populate(comment, {path: "user", select: "_id name email"})
+    res.send({
+        status  : true,
+        message : "Successful",
+        data    : commentPopulate
+    })
+})
 
 module.exports = router;

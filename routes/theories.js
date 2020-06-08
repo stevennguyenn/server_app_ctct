@@ -3,7 +3,7 @@ const mongoose = require("mongoose")
 const Course = mongoose.model("Course")
 const Theory = mongoose.model("Theory")
 const LikeTheory = mongoose.model("LikeTheory")
-const CommentTheory = mongoose.model("CommentTheory")
+const Comment = mongoose.model("Comment")
 const auth = require("../middleware/auth")
 
 router.post("/list_course", async (req, res) => {
@@ -87,9 +87,8 @@ router.post("/like", auth, async (req, res) => {
 })
 
 router.post("/comments", auth, async (req, res) => {
-    // const id_user = req.user._id;
     const {id_theory, offset, limit} = req.body
-    const comments = await CommentTheory.find({$and : [{theory: id_theory}, {is_parent: true}]})
+    const comments = await Comment.find({$and : [{theory: id_theory}, {is_parent: true}]})
                         .populate({
                             path: "children",
                             populate: {
@@ -100,8 +99,7 @@ router.post("/comments", auth, async (req, res) => {
                         .populate({
                             path: "user",
                             select: "_id name email",
-                        })
-                        .exec()
+                        }).skip(offset).limit(limit)
     res.send({
         status  : true,
         message : "Successful",
@@ -112,7 +110,7 @@ router.post("/comments", auth, async (req, res) => {
 router.post("/add_comment", auth, async (req, res) => {
     const id_user = req.user._id;
     const {id_theory, id_parent, content} = req.body
-    const comment = new CommentTheory()
+    const comment = new Comment()
     comment.user = id_user
     comment.content = content
     comment.theory = id_theory
@@ -121,13 +119,13 @@ router.post("/add_comment", auth, async (req, res) => {
         comment.is_parent = true
         await comment.save();
     } else {
-        const parent_comment = await CommentTheory.findOne({_id: id_parent})
+        const parent_comment = await Comment.findOne({_id: id_parent})
         comment.is_parent = false
         await comment.save()
         parent_comment.children.push(comment)
         await parent_comment.save()
     }
-    const commentPopulate = await CommentTheory.populate(comment, {path: "user", select: "_id name email"})
+    const commentPopulate = await Comment.populate(comment, {path: "user", select: "_id name email"})
     res.send({
         status  : true,
         message : "Successful",
