@@ -136,12 +136,12 @@ router.post("/add_comment", auth, async (req, res) => {
 })
 
 router.post("/relate_theory", auth, async (req, res) => {
-    const {id_course, id_theory} = req.body
-    const videos = await Video.find({$and: [{theory: id_theory}, {course: id_course}]});
-    const exercises = await Exercise.find({$and: [{theory: id_theory}, {course: id_course}]}).select("name level type time");
+    const {id_theory} = req.body
+    const videos = await Video.find({theory: id_theory});
+    const exercises = await Exercise.find({theory: id_theory}).select("name level type time");
     const data = {
-        "video" : videos,
-        "exercise": exercises
+        "videos" : videos,
+        "exercises": exercises
     }
     res.send({
         status  : true,
