@@ -31,11 +31,11 @@ const exercise_schema = mongoose.Schema({
         required: false,
         // select: false
     },
-    // theme: {
-    //     type: mongoose.Schema.Types.ObjectId,
-    //     required: true,
-    //     ref: "Theme"
-    // },
+    theory: {
+        type: mongoose.Schema.Types.ObjectId,
+        required: false,
+        ref: "Theory"
+    },
     level: {
         type: String,
         enum : ["easy", "medium", "hard"],

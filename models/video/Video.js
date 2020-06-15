@@ -18,6 +18,11 @@ const video_schema = mongoose.Schema({
         required: true,
         ref: "Course"
     },
+    theory: {
+        type: mongoose.Schema.Types.ObjectId,
+        required: false,
+        ref: "Theory"
+    },
     url: {
         type: String,
         required: true,
