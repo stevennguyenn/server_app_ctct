@@ -23,7 +23,7 @@ const option_schema = mongoose.Schema({
         type: Date,
         default: Date.now,
         select: false
-    }, 
+    },
     __v: {
         type: Number,
         select: false
