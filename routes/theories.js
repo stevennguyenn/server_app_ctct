@@ -5,6 +5,8 @@ const Theory = mongoose.model("Theory")
 const LikeTheory = mongoose.model("LikeTheory")
 const Comment = mongoose.model("Comment")
 const auth = require("../middleware/auth")
+const Exercise = require("../models/exercise/Exercise")
+const Video = mongoose.model("Video")
 
 router.post("/list_course", async (req, res) => {
     const {offset, limit} = req.body
@@ -130,6 +132,21 @@ router.post("/add_comment", auth, async (req, res) => {
         status  : true,
         message : "Successful",
         data    : commentPopulate
+    })
+})
+
+router.post("/relate_theory", auth, async (req, res) => {
+    const {id_theory} = req.body
+    const videos = await Video.find({theory: id_theory});
+    const exercises = await Exercise.find({theory: id_theory}).select("name level type time");
+    const data = {
+        "videos" : videos,
+        "exercises": exercises
+    }
+    res.send({
+        status  : true,
+        message : "Successful",
+        data    : data
     })
 })
 
