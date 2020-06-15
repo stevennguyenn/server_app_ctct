@@ -35,6 +35,12 @@ const exercise_schema = mongoose.Schema({
         type: Number,
         required: true
     },
+    user: [{
+        type: mongoose.Schema.Types.ObjectId,
+        required: false,
+        ref: "User",
+        select: false
+    }],
     expire_at: {
         type: Date,
         default: Date.now,

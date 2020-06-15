@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const comment_theory_schema = mongoose.Schema({
+const comment_schema = mongoose.Schema({
     user: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
@@ -12,7 +12,15 @@ const comment_theory_schema = mongoose.Schema({
     },
     theory: {
         type: mongoose.Schema.Types.ObjectId,
-        required: true,
+        required: false,
+    },
+    video: {
+        type: mongoose.Schema.Types.ObjectId,
+        required: false,
+    },
+    question: {
+        type: mongoose.Schema.Types.ObjectId,
+        required: false,
     },
     is_parent: {
         type: Boolean,
@@ -22,7 +30,7 @@ const comment_theory_schema = mongoose.Schema({
     children: [
         {
             type: mongoose.Schema.Types.ObjectId,
-            ref: 'CommentTheory'
+            ref: 'Comment'
         }
     ],
     created_at: { 
@@ -35,4 +43,4 @@ const comment_theory_schema = mongoose.Schema({
     }
 });
 
-module.exports = mongoose.model("CommentTheory", comment_theory_schema);
+module.exports = mongoose.model("Comment", comment_schema);

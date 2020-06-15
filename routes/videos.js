@@ -3,15 +3,12 @@ const mongoose = require("mongoose")
 const Course = mongoose.model("Course")
 const Video = mongoose.model("Video")
 const LikeVideo = mongoose.model("LikeVideo")
-const CommentVideo = mongoose.model("CommentVideo")
+const Comment = mongoose.model("Comment")
 const auth = require("../middleware/auth")
 
 router.post("/list_video_course", async function(req, res) {
     const {offset, limit} = req.body
-    const list_course_video = await Course.find({}).skip(offset).limit(limit).populate({
-        path: "list_video",
-        select: "-author"
-    })
+    const list_course_video = await Course.find({}).skip(offset).limit(limit)
     res.send({
         status  : true,
         message : "Successful",
@@ -20,29 +17,16 @@ router.post("/list_video_course", async function(req, res) {
 })
 
 router.post("/add_video", auth, async function(req, res) {
-    const {name, type, img_background, time, course, url, author, description, document} = req.body
-    const course_entity = await Course.findOne({_id: course})
+    const {name, img_background, time, course, url, description, documents} = req.body
     const video = new Video()
     video.name = name
-    video.type = type
     video.img_background = img_background
     video.time = time
     video.course = course
     video.url = url
-    video.author = author
     video.description = description
-    video.document = document
-    if (course_entity.list_video.length >= 20) {
-        course_entity.list_video.slice(0,-1)
-    } 
-    if (course_entity.list_video.length == 0){
-        course_entity.list_video.push(video._id)
-    } else {
-        console.log(course_entity.list_video)
-        course_entity.list_video.splice(0, 0, video._id)
-    }
+    video.documenst = documents
     await video.save()
-    await course_entity.save()
     res.send({
         status  : true,
         message : "Successful",
@@ -53,10 +37,7 @@ router.post("/add_video", auth, async function(req, res) {
 router.get("/:id_video", auth, async function(req, res) {
     const id_video = req.params.id_video
     const id_user = req.user._id
-    const video = await Video.findOne({_id: id_video}).populate({
-        path : "author",
-        select: "_id name email img_avatar teacher"
-    })
+    const video = await Video.findOne({_id: id_video})
     const user_like = await LikeVideo.findOne({$and: [{id_user: id_user}, {id_video: id_video}]})
     if (user_like != null){
         video.is_like = true
@@ -74,10 +55,17 @@ router.get("/:id_video", auth, async function(req, res) {
 
 router.post("/video_course", async function(req, res) {
     const {offset, limit, id_theory} = req.body
-    const list_video = await Video.find({course: id_theory}).skip(offset).limit(limit).populate({
-        path: "author",
-        select: "_id name email img_avatar"
+    const list_video = await Video.find({course: id_theory}).skip(offset).limit(limit)
+    res.send({
+        status  : true,
+        message : "Successful",
+        data    : list_video
     })
+})
+
+router.post("/relate_video_course", async function(req, res) {
+    const {offset, limit, id_theory, id_video} = req.body
+    const list_video = await Video.find({course: id_theory, _id: {$ne: id_video}}).skip(offset).limit(limit)
     res.send({
         status  : true,
         message : "Successful",
@@ -102,9 +90,10 @@ router.post("/like", auth, async function(req, res) {
     })
 })
 
+
 router.post("/comments", auth, async (req, res) => {
     const {id_video, offset, limit} = req.body
-    const comments = await CommentVideo.find({$and : [{video: id_video}, {is_parent: true}]})
+    const comments = await Comment.find({$and : [{video: id_video}, {is_parent: true}]})
                         .skip(offset).limit(limit)
                         .populate({
                             path: "children",
@@ -127,7 +116,7 @@ router.post("/comments", auth, async (req, res) => {
 router.post("/add_comment", auth, async (req, res) => {
     const id_user = req.user._id;
     const {id_video, id_parent, content} = req.body
-    const comment = new CommentVideo()
+    const comment = new Comment()
     comment.user = id_user
     comment.content = content
     comment.video = id_video
@@ -136,13 +125,13 @@ router.post("/add_comment", auth, async (req, res) => {
         comment.is_parent = true
         await comment.save();
     } else {
-        const parent_comment = await CommentVideo.findOne({_id: id_parent})
+        const parent_comment = await Comment.findOne({_id: id_parent})
         comment.is_parent = false
         await comment.save()
         parent_comment.children.push(comment)
         await parent_comment.save()
     }
-    const commentPopulate = await CommentVideo.populate(comment, {path: "user", select: "_id name email img_avatar"})
+    const commentPopulate = await Commentpopulate(comment, {path: "user", select: "_id name email img_avatar"})
     res.send({
         status  : true,
         message : "Successful",

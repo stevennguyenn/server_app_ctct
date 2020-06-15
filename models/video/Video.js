@@ -5,11 +5,6 @@ const video_schema = mongoose.Schema({
         type: String,
         required: true
     },
-    type: {
-        type: String,
-        enum: ["youtube", "mp4"],
-        required: true
-    },
     img_background: {
         type: String,
         required: true
@@ -27,11 +22,6 @@ const video_schema = mongoose.Schema({
         type: String,
         required: true,
     },
-    author: {
-        type: mongoose.Schema.Types.ObjectId,
-        required: true,
-        ref: "User"
-    },
     description: {
         type: String,
         required: true,
@@ -45,10 +35,10 @@ const video_schema = mongoose.Schema({
         type: Boolean,
         required: false
     },
-    document: {
+    documents: [{
         type: String,
         required: false,
-    },
+    }],
     created_at: {
         type: Date,
         default: Date.now

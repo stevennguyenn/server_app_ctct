@@ -3,9 +3,7 @@ const mongoose = require("mongoose")
 const auth = require("../middleware/auth")
 const Exercise = mongoose.model("Exercise")
 const Question = mongoose.model("Question")
-const Option = mongoose.model("Option")
 const Result = mongoose.model("Result")
-const ResultQuestion = mongoose.model("ResultQuestion")
 
 router.post("/list_exercise", auth, async (req, res) => {
     const {offset, limit, id_course, type} = req.body
@@ -32,38 +30,21 @@ router.post("/list_exercise_competition", auth, async (req, res) => {
     })
 })
 
-router.post("/add_exercise", auth, async (req, res) => {
-    const {name, id_course, type, level, theme, time} = req.body
-    const exercise = new Exercise()
-    exercise.name = name
-    exercise.course = id_course
-    exercise.type = type
-    exercise.level = level
-    exercise.time = time
-    // exercise.theme = theme
-    await exercise.save()
-    res.send({
-        status  : true,
-        message : null,
-        data    : exercise
-    })
-})
-
 router.post("/create_question", auth, async (req, res) => {
     const {content, options, type, theme, level, answer} = req.body
     let question = new Question()
     question.content = content
     question.type = type
-    question.theme = theme
+    // question.theme = theme
     question.level = level
     question.answer = answer
     var arrOption = [];
+    var i = 1;
     for (const option of options) {
         console.log(option)
-        let data = new Option({content: option.content, is_correct: option.is_correct})
-        data.question = question._id
-        await data.save()
-        arrOption.push(data._id)
+        let data = {"content": option.content, "is_correct": option.is_correct, "_id" : i}
+        arrOption.push(data)
+        i += 1
     }
     question.options = arrOption
     await question.save()
@@ -75,13 +56,15 @@ router.post("/create_question", auth, async (req, res) => {
 })
 
 router.post("/create_exercise", auth, async (req, res) => {
-    const {name, course, type, level, theme, questions} = req.body
+    const {name, course, type, level, theme, questions, time} = req.body
     let exercise = new Exercise()
     exercise.name = name
     exercise.course = course
     exercise.type = type
     exercise.level = level
     exercise.questions = questions
+    exercise.time = time
+    exercise.theme = theme
     await exercise.save()
     res.send({
         status  : true,
@@ -90,16 +73,30 @@ router.post("/create_exercise", auth, async (req, res) => {
     })
 })
 
+
+// router.post("/add_exercise", auth, async (req, res) => {
+//     const {name, id_course, type, level, theme, time} = req.body
+//     const exercise = new Exercise()
+//     exercise.name = name
+//     exercise.course = id_course
+//     exercise.type = type
+//     exercise.level = level
+//     exercise.time = time
+//     exercise.theme = theme
+//     await exercise.save()
+//     res.send({
+//         status  : true,
+//         message : null,
+//         data    : exercise
+//     })
+// })
+
 router.get("/:id_exercise", auth, async (req, res) => {
     const id_exercise = req.params.id_exercise
     const exercise = await Exercise.findOne({_id: id_exercise})
                     .populate({
                         path: "questions",
-                        populate: {
-                            path: "options",
-                            select: "_id content"
-                        },
-                        select: "-level"
+                        select: "-options.is_correct -answer"
                     }).select("-course")
     res.send({
         status  : true,
@@ -111,54 +108,44 @@ router.get("/:id_exercise", auth, async (req, res) => {
 
 router.post("/submit_exercise", auth, async (req, res) => {
     const {id_exercise, answer, time} = req.body
-    const exercise = await Exercise.findOne({_id: id_exercise})
-                    .populate({
-                        path: "questions",
-                        populate: {
-                            path: "options"
-                        }
-                    })
+    const exercise = await Exercise.findOne({_id: id_exercise}).populate("questions")
     var point = 0
     const list_question = exercise.questions
     var result_questions = [];
     for (var i = 0; i < list_question.length; i ++) {
-        const userAnswer = new ResultQuestion();
-        userAnswer.content = list_question[i].content
-        userAnswer.options = list_question[i].options
-        userAnswer.type = list_question[i].type
-        userAnswer.level = list_question[i].level
-        userAnswer.user_answer = answer[i].answer
-        // console.log(list_question[i].type)
+        var userAnswer = {};
+        userAnswer["content"] = list_question[i].content
+        userAnswer["options"] = list_question[i].options
+        userAnswer["type"] = list_question[i].type
+        userAnswer["level"] = list_question[i].level
+        userAnswer["user_answer"] = answer[i].answer
         if (list_question[i].type == "fill") {
             console.log(list_question[i])
             if (answer[i].answer == list_question[i].answer) {
-                point += 1;
-                userAnswer.is_correct = true
-                continue;
+                point += 1
+                userAnswer["is_correct"] = true
+                continue
             }
-            // console.log(list_question[i].answer)
             userAnswer.answer = list_question[i].answer
         } else {
             for (const option of list_question[i].options) {
                 if (option.is_correct == true) {
                     userAnswer.answer = option._id
-                    // console.log(option._id)
                     if (option.id == answer[i].answer) {
-                        point += 1;
-                        userAnswer.is_correct = true
-                        continue;
+                        point += 1
+                        userAnswer["is_correct"] = true
+                        continue
                     }
                 }
             }
         }
-        // userAnswer.answer = "dadasdsa"
-        // console.log(userAnswer.answer)
-        result_questions.push(userAnswer._id);
-        await userAnswer.save()
+        result_questions.push(userAnswer)
     }
     const result = new Result()
     result.name = exercise.name
+    result.type = exercise.type
     result.user = req.user._id
+    result.course = exercise.course
     result.exercise = exercise._id
     result.point = point
     result.time = time
@@ -166,17 +153,13 @@ router.post("/submit_exercise", auth, async (req, res) => {
     result.experience = point * 100;
     result.result_questions = result_questions
     await result.save()
-    const resultFull = await Result.findOne({_id: result._id}).populate({
-        path: "result_questions",
-        populate: {
-            path: "options"
-        }
-    })
+    exercise.user.push(req.user._id)
+    await exercise.save()
     res.send({
         status  : true,
         message : null,
-        data    : resultFull
+        data    : result
     })
 })
 
-module.exports = router;
+module.exports = router

@@ -7,21 +7,19 @@ const morgan = require("morgan")
 //database
 require("./mongo")
 //models
-require("./models/CommentTheory")
-require("./models/User")
+require("./models/Comment")
+require("./models/user/User")
 require("./models/Course")
-require("./models/Theory")
+require("./models/theory/Theory")
 require("./models/LikeTheory")
 require("./models/Image")
-require("./models/Exercise")
-require("./models/Option")
-require("./models/Question")
+require("./models/exercise/Exercise")
+require("./models/exercise/Question")
 require("./models/Theme")
-require("./models/Result")
-require("./models/ResultQuestion")
-require("./models/Video")
+require("./models/result/Result")
+require("./models/video/Video")
 require("./models/LikeVideo")
-require("./models/CommentVideo")
+require("./models/notification/Notification")
 
 //middleware
 app.use(bodyParser.json())
@@ -36,6 +34,7 @@ app.use("/upload", require("./routes/upload"))
 app.use("/exercises", require("./routes/exercises"))
 app.use("/results", require("./routes/results"))
 app.use("/videos", require("./routes/videos"))
+app.use("/notifications", require("./routes/notifications"))
 app.use(express.static(__dirname));
 
 //not found router 

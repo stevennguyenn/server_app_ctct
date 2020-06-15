@@ -61,14 +61,18 @@ const user_schema = mongoose.Schema({
     number_exercise: {
         type: String,
     },
-    tokens: [{
-        token: {
-            type: String,
-            required: true
-        }
-    }],
+    rank: {
+        type: Number
+    },
     token: {
         type: String,
+    },
+    fcm_token: {
+        type: String,
+    },
+    device_type: {
+        type: String,
+        enum : ["android", "iOS"]
     },
     created_at: {
         type: Date,
@@ -98,7 +102,7 @@ user_schema.methods.generateAuthToken = async function() {
     // Generate an auth token for the user
     const user = this
     const token = jwt.sign({_id: user._id}, process.env.JWT_KEY)
-    user.tokens = user.tokens.concat({token})
+    user.token = token
     await user.save()
     return  token
 }

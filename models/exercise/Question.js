@@ -1,15 +1,24 @@
 const mongoose = require("mongoose")
 
-const result_question_schema = mongoose.Schema({
+const exercise_schema = mongoose.Schema({
     content: {
         type: String,
         required: true
     },
     options: [
         {
-            type: mongoose.Schema.Types.ObjectId,
-            required: true,
-            ref: "Option",
+            _id: {
+                type: Number,
+                required: true
+            },
+            content: {
+                type: String,
+                required: true
+            },
+            is_correct: {
+                type: Boolean,
+                required: true
+            },
         }
     ],
     type: {
@@ -19,23 +28,23 @@ const result_question_schema = mongoose.Schema({
     },
     answer: {
         type: String,
-        required: true,
-        default: ""
+        required: false,
+        // select: false
     },
-    user_answer: {
-        type: String,
-        required: false
-    },
-    is_correct: {
-        type: Boolean,
-        required: true,
-        default: false
-    },
+    // theme: {
+    //     type: mongoose.Schema.Types.ObjectId,
+    //     required: true,
+    //     ref: "Theme"
+    // },
     level: {
         type: String,
         enum : ["easy", "medium", "hard"],
         required: true
     },
+    explanation: {
+        type: String,
+        required: false,
+    }, 
     created_at: {
         type: Date,
         default: Date.now,
@@ -52,4 +61,4 @@ const result_question_schema = mongoose.Schema({
     }
 }, { versionKey: false })
  
-module.exports = mongoose.model("ResultQuestion", result_question_schema)
+module.exports = mongoose.model("Question", exercise_schema)

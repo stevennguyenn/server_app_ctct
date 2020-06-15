@@ -20,7 +20,6 @@ router.post("/change_password", auth, async (req, res) => {
     const {old_password, new_password} = req.body
     const isPasswordMatch = await bcrypt.compare(old_password, password)
     if (isPasswordMatch == true) {
-        user.tokens = []
         user.token = ""
         console.log(new_password)
         user.password = new_password
@@ -88,7 +87,7 @@ router.post("/change_public_info", auth, async (req, res) => {
 })
 
 router.post("/login", async (req, res) => {
-    const {email, password} = req.body
+    const {email, password, device_type, fcm_token} = req.body
     // Search for a user by email and password.
     const user = await (User.findOne({ email}))
     if (!user) {
@@ -99,7 +98,9 @@ router.post("/login", async (req, res) => {
         throw new Error({ error: 'Invalid login credentials' })
     }
     const token = await user.generateAuthToken()
+    user.device_type = device_type
     user.token = token
+    user.fcm_token = fcm_token
     await user.save()
     res.status(201).send({
         status  : true,
@@ -107,5 +108,27 @@ router.post("/login", async (req, res) => {
         data    : user
     })
 })
+
+router.post("/update_fcm_token", auth, async (req, res) => {
+    const {fcm_token} = req.body;
+    user.fcm_token = fcm_token;
+    await user.save()
+    res.status(201).send({
+        status  : true,
+        message : "Success",
+    })
+})
+
+router.post("/logout", auth, async (req, res) => {
+    const user = req.user;
+    req.user.fcm_token = "";
+    user.token = "";
+    await user.save()
+    res.status(201).send({
+        status  : true,
+        message : "Success",
+    })
+})
+
 
 module.exports = router;
