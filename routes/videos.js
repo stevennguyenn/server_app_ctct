@@ -5,6 +5,7 @@ const Video = mongoose.model("Video")
 const LikeVideo = mongoose.model("LikeVideo")
 const Comment = mongoose.model("Comment")
 const auth = require("../middleware/auth")
+const Theory = require("../models/theory/Theory")
 
 router.post("/list_video_course", async function(req, res) {
     const {offset, limit} = req.body
@@ -136,6 +137,16 @@ router.post("/add_comment", auth, async (req, res) => {
         status  : true,
         message : "Successful",
         data    : commentPopulate
+    })
+})
+
+router.post("/relate_document", auth, async (req, res) => {
+    const {id_theories} = req.body
+    const theories = await Theory.find({_id : {$in: id_theories}});
+    res.send({
+        status  : true,
+        message : "Successful",
+        data    : theories
     })
 })
 

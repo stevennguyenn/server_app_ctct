@@ -18,11 +18,13 @@ const video_schema = mongoose.Schema({
         required: true,
         ref: "Course"
     },
-    theory: {
-        type: mongoose.Schema.Types.ObjectId,
-        required: false,
-        ref: "Theory"
-    },
+    theory: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            required: false,
+            ref: "Theory"
+        }
+    ],
     url: {
         type: String,
         required: true,
@@ -40,10 +42,6 @@ const video_schema = mongoose.Schema({
         type: Boolean,
         required: false
     },
-    documents: [{
-        type: String,
-        required: false,
-    }],
     created_at: {
         type: Date,
         default: Date.now
