@@ -178,4 +178,22 @@ router.post("/add_comment", auth, async (req, res) => {
     })
 })
 
+router.get("/statistics/:id_exercise", auth, async (req, res) => {
+    const id_exercise = req.params.id_exercise;
+    const result1_5 = await Result.find({exercise: id_exercise, point: {$gte: 0, $lt: 5}});
+    const result5_8 = await Result.find({exercise: id_exercise, point: {$gte: 5, $lt: 8}});
+    const result8_10 = await Result.find({exercise: id_exercise, point: {$gte: 8, $lte: 10}});
+    const result = {
+        "0_5": result1_5.length,
+        "5_8": result5_8.length,
+        "8_10": result8_10.length,
+    }
+    res.send({
+        status  : true,
+        message : "Successful",
+        data    : result
+    })
+})
+
+
 module.exports = router;
