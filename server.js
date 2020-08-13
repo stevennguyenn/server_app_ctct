@@ -14,7 +14,7 @@ require("./models/Theory")
 
 //middleware
 app.use(bodyParser.json())
-app.use(morgan())
+app.use(morgan('dev'))
 
 //routes
 app.use("/posts", require("./routes/posts"))
@@ -46,6 +46,6 @@ if (app.get("env") == "production") {
     })
 }
 
-app.listen(process.env.PORT, function() {
+app.listen(process.env.PORT || 3000, function() {
     console.log("Server listion port " + process.env.PORT);
 })
