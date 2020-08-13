@@ -1,25 +1,40 @@
-const express = require("express");
-require("express-async-errors");
-const app = express();
-const bodyParser = require("body-parser");
-const morgan = require("morgan");
+const express = require("express")
+require("express-async-errors")
+const app = express()
+const bodyParser = require("body-parser")
+const morgan = require("morgan")
+
 //database
 require("./mongo")
 //models
-require("./models/Post")
 require("./models/Comment")
-require("./models/User")
+require("./models/user/User")
 require("./models/Course")
-require("./models/Theory")
+require("./models/theory/Theory")
+require("./models/LikeTheory")
+require("./models/Image")
+require("./models/exercise/Exercise")
+require("./models/exercise/Question")
+require("./models/result/Result")
+require("./models/video/Video")
+require("./models/LikeVideo")
+require("./models/notification/Notification")
 
 //middleware
 app.use(bodyParser.json())
 app.use(morgan('dev'))
 
 //routes
-app.use("/posts", require("./routes/posts"))
+app.use(express.json({limit: '50mb'}))
+app.use(bodyParser.urlencoded({limit: '50mb', extended: true}))
 app.use("/users", require("./routes/users"))
-app.use("/theory", require("./routes/theory"))
+app.use("/theories", require("./routes/theories"))
+app.use("/upload", require("./routes/upload"))
+app.use("/exercises", require("./routes/exercises"))
+app.use("/results", require("./routes/results"))
+app.use("/videos", require("./routes/videos"))
+app.use("/notifications", require("./routes/notifications"))
+app.use(express.static(__dirname));
 
 //not found router 
 app.use((req, res, next) => {
