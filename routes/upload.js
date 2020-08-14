@@ -3,6 +3,7 @@ const mongoose = require("mongoose")
 const uploadTheory = require("../middleware/upload_theory")
 const uploadExercise = require("../middleware/upload_exercise")
 const uploadImage = require("../middleware/upload_image")
+const uploadImageDucHoa = require("../middleware/upload_image_duchoa")
 const Image = mongoose.model("Image")
 const fs = require('fs');
 
@@ -19,6 +20,40 @@ router.post("/images", uploadImage.single("data"), function(req, res, next) {
         data    : file.path
     })
 })
+
+router.post("/duchoa/images", function(req, res, next) {
+    let upload = uploadImageDucHoa.single("data")
+    upload(req,res,function(err) {
+        const file = req.file
+        if (!file) {
+            const error = new Error('Please upload a file')
+            error.httpStatusCode = 400
+            return next(error)
+        }
+        res.send({
+            status  : true,
+            message : "Successful",
+            data    : file.path
+        })
+    })
+})
+
+router.delete("/duchoa/images", function(req, res, next) {
+    const { url } = req.body
+    console.log(url);
+    fs.unlink(url, (err) => {
+        if (err) {
+            console.log(err.message)
+            const error = new Error('File not found')
+            error.httpStatusCode = 400
+            return next(error)
+        }
+        res.send({
+            status  : true,
+            message : "Successful",
+        })
+      });
+});
 
 router.post("/theories", uploadTheory.single("file"), function(req, res) {
     console.log(req.body)

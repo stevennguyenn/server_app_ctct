@@ -46,17 +46,16 @@ app.use((req, res, next) => {
 //errors handler
 if (app.get("env") == "production") {
     app.use((error, req, res, next) => {
-        res.status(req.status || 500).send({
+        res.status(req.status || 400).send({
             status  : false,
             message: error.message
         })
     })
 } else {
     app.use((error, req, res, next) => {
-        res.status(req.status || 500).send({
+        res.status(req.status || 400).send({
             status  : false,
             message: error.message,
-            stack: error.stack
         })
     })
 }
