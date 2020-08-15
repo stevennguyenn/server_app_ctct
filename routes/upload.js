@@ -94,7 +94,7 @@ router.delete("/siquocdan/images", function(req, res, next) {
 
 
 router.post("/stmnbinhduong/images", function(req, res, next) {
-    let upload = uploadImageHungHa.single("data")
+    let upload = uploadImageStmnBinhDuong.single("data")
     upload(req,res,function(err) {
         const file = req.file
         if (!file) {
