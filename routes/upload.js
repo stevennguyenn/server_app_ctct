@@ -9,6 +9,7 @@ const uploadImageStmnBinhDuong = require("../middleware/upload_image_stmnbinhduo
 const uploadImageHungHa = require("../middleware/upload_image_hungha")
 const Image = mongoose.model("Image")
 const fs = require('fs');
+const fsExtra = require('fs-extra')
 
 router.post("/images", uploadImage.single("data"), function(req, res, next) {
     const file = req.file
@@ -58,6 +59,15 @@ router.delete("/duchoa/images", function(req, res, next) {
       });
 });
 
+router.delete("/duchoa/delete_all_images", function(req, res, next) {
+    const directory = "upload/images_duchoa"
+    fsExtra.emptyDirSync(directory)
+    res.send({
+        status  : true,
+        message : "Successful",
+    })
+})
+
 router.post("/siquocdan/images", function(req, res, next) {
     let upload = uploadImageSiQuocDan.single("data")
     upload(req,res,function(err) {
@@ -93,6 +103,16 @@ router.delete("/siquocdan/images", function(req, res, next) {
 })
 
 
+router.delete("/siquocdan/delete_all_images", function(req, res, next) {
+    const directory = "upload/images_siquocdan"
+    fsExtra.emptyDirSync(directory)
+    res.send({
+        status  : true,
+        message : "Successful",
+    })
+})
+
+
 router.post("/stmnbinhduong/images", function(req, res, next) {
     let upload = uploadImageStmnBinhDuong.single("data")
     upload(req,res,function(err) {
@@ -107,6 +127,15 @@ router.post("/stmnbinhduong/images", function(req, res, next) {
             message : "Successful",
             data    : file.path
         })
+    })
+})
+
+router.delete("/stmnbinhduong/delete_all_images", function(req, res, next) {
+    const directory = "upload/images_stmnbinhduong"
+    fsExtra.emptyDirSync(directory)
+    res.send({
+        status  : true,
+        message : "Successful",
     })
 })
 
@@ -159,6 +188,15 @@ router.delete("/hungha/images", function(req, res, next) {
             message : "Successful",
         })
       })
+})
+
+router.delete("/hungha/delete_all_images", function(req, res, next) {
+    const directory = "upload/images_hungha"
+    fsExtra.emptyDirSync(directory)
+    res.send({
+        status  : true,
+        message : "Successful",
+    })
 })
 
 router.post("/theories", uploadTheory.single("file"), function(req, res) {
