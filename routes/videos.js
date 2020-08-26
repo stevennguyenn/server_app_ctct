@@ -64,6 +64,23 @@ router.post("/video_course", async function(req, res) {
     })
 })
 
+router.post("/video_course/search", async (req, res) => {
+    console.log("i am here");
+    const {id_course, offset, limit, text} = req.body
+    let list_video = await Video.find({course : id_course, name: {$regex: new RegExp(text, 'i')}}).populate().skip(offset).limit(limit)
+    list_video.sort((a, b) => {
+        if (a.name.toLocaleLowerCase().lastIndexOf(text.toLocaleLowerCase(), 0) === 0)  {return -1}
+        if (b.name.toLocaleLowerCase().lastIndexOf(text.toLocaleLowerCase(), 0) === 0)  {return 1}
+        return 0;
+    })
+    res.send({
+        status  : true,
+        message : null,
+        data    : list_video
+    })
+})
+
+
 router.post("/relate_video_course", async function(req, res) {
     const {offset, limit, id_theory, id_video} = req.body
     const list_video = await Video.find({course: id_theory, _id: {$ne: id_video}}).skip(offset).limit(limit)
