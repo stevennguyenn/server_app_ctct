@@ -7,6 +7,7 @@ const Comment = mongoose.model("Comment")
 const auth = require("../middleware/auth")
 const Exercise = require("../models/exercise/Exercise")
 const Video = mongoose.model("Video")
+var ObjectID = require("mongodb").ObjectID
 
 router.post("/list_course", async (req, res) => {
     const {offset, limit} = req.body
@@ -137,8 +138,8 @@ router.post("/add_comment", auth, async (req, res) => {
 
 router.post("/relate_theory", auth, async (req, res) => {
     const {id_theory} = req.body
-    const videos = await Video.find({theory: id_theory});
-    const exercises = await Exercise.find({theory: id_theory}).select("name level type time");
+    const videos = await Video.find({theory: { $in: id_theory}});
+    const exercises = await Exercise.find({theory: { $in: id_theory}}).select("name level type time");
     const data = {
         "videos" : videos,
         "exercises": exercises

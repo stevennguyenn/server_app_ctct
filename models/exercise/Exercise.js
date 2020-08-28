@@ -10,11 +10,11 @@ const exercise_schema = mongoose.Schema({
         required: true,
         ref: "Course"
     },
-    theory: {
+    theory: [{
         type: mongoose.Schema.Types.ObjectId,
         required: false,
         ref: "Theory"
-    },
+    }],
     type: {
         type: String,
         enum: ["exercise", "middle", "end"],

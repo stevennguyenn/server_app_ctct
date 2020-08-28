@@ -88,14 +88,16 @@ router.post("/change_public_info", auth, async (req, res) => {
 
 router.post("/login", async (req, res) => {
     const {email, password, device_type, fcm_token} = req.body
+    console.log(email);
+    console.log(password);
     // Search for a user by email and password.
     const user = await (User.findOne({ email}))
     if (!user) {
-        throw new Error({ error: 'Invalid login credentials' })
+        throw new Error("Invalid login credentials")
     }
     const isPasswordMatch = await bcrypt.compare(password, user.password)
     if (!isPasswordMatch) {
-        throw new Error({ error: 'Invalid login credentials' })
+        throw new Error("Invalid login credentials")
     }
     const token = await user.generateAuthToken()
     user.device_type = device_type
