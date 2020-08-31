@@ -3,6 +3,7 @@ require("express-async-errors")
 const app = express()
 const bodyParser = require("body-parser")
 const morgan = require("morgan")
+const cors = require("cors")
 
 //database
 require("./mongo")
@@ -21,6 +22,7 @@ require("./models/LikeVideo")
 require("./models/notification/Notification")
 
 //middleware
+app.use(cors())
 app.use(bodyParser.json())
 app.use(morgan())
 

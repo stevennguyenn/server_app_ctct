@@ -3,6 +3,7 @@ const mongoose = require("mongoose")
 const User = mongoose.model("User")
 const bcrypt = require("bcryptjs")
 const auth = require("../middleware/auth")
+const admin = require("../middleware/admin")
 
 router.post("/", async (req, res) => {
     const user = new User(req.body)
@@ -129,6 +130,75 @@ router.post("/logout", auth, async (req, res) => {
     res.status(201).send({
         status  : true,
         message : "Success",
+    })
+})
+
+router.post("/admin_login", async(req, res) => {
+    const {email, password, fcm_token} = req.body
+    const user = await (User.findOne({email}))
+    if (!user)  {
+        throw new Error("Invalid login credentials")
+    }
+    const isPasswordMatch = await bcrypt.compare(password, user.password)
+    if (!isPasswordMatch) {
+        throw new Error("Invalid login credentials")
+    }
+    if (!user.is_admin) {
+        throw new Error("Invalid login credentials")
+    }
+    const token = await user.generateAuthToken()
+    user.fcm_token = fcm_token
+    await (user.save())
+    res.status(201).send({
+        status: true,
+        message: null,
+        data: user
+    })
+})
+
+router.post("/admin", admin, async (req, res) => {
+    const super_admin = req.user
+    if (!super_admin.is_super_admin)   {
+        throw new Error("Invalid authority")
+    }
+    const {email} = req.body
+    const new_admin = await User.findOne({email})
+    if (!new_admin)  {
+        throw new Error("Invalid email")
+    }
+    if (new_admin.is_admin) {
+        throw new Error("Already an admin")
+    }
+    new_admin.is_admin = true
+    res.status(201).send({
+        status: true,
+        message: "Success"
+    })
+})
+
+router.get("/", admin, async (req, res) => {
+    const offset = Number(req.query.offset)
+    const num = Number(req.query.number)
+    const users = await User.find().populate().skip(offset).limit(num)
+    res.send({
+        status  : true,
+        message : null,
+        data    : users
+    })
+})
+
+router.post("/length", async (req, res) => {    // NOTE: POST works while GET doesn't and I don't understand why??????
+    console.log("something")
+    await User.countDocuments({}, (err, result) => {
+        if (err)    {
+            console.log(err)
+            res.send(500)
+        }
+        res.send({
+            status: true,
+            message: null,
+            data: result
+        })
     })
 })
 

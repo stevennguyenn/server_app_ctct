@@ -81,6 +81,14 @@ const user_schema = mongoose.Schema({
     updated_at: {
         type: Date,
         default: Date.now
+    },
+    is_admin:   {
+        type: Boolean,
+        default: false,
+    },
+    is_super_admin: {
+        type: Boolean,
+        default: false,
     }
 })
 
