@@ -149,6 +149,7 @@ router.post("/submit_exercise", auth, async (req, res) => {
     result.exercise = exercise._id
     result.point = point
     result.time = time
+    result.level = exercise.level
     result.diamond = point * 10;
     result.experience = point * 100;
     result.result_questions = result_questions

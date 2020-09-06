@@ -20,6 +20,11 @@ const result_schema = mongoose.Schema({
         required: true,
         ref: "Exercise"
     },
+    level : {
+        type: String,
+        enum : ["easy", "medium", "hard"],
+        required: true
+    },
     type: {
         type: String,
         enum: ["exercise", "middle", "end"],
