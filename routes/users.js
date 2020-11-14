@@ -125,7 +125,7 @@ router.put("/update_fcm_token", auth, async (req, res) => {
     })
 })
 
-router.get("/logout", auth, async (req, res) => {
+router.delete("/logout", auth, async (req, res) => {
     const user = req.user;
     req.user.fcm_token = "";
     user.token = "";
@@ -250,6 +250,47 @@ router.post('/facebook', function(req, res) {
         });
     }).on('error', (e) => {
         console.error(e);
+    });
+});
+
+router.post('/google', function(req, res) {
+    const {token, fcm_token} = req.body;
+    https.get("https://www.googleapis.com/oauth2/v3/userinfo?access_token=" 
+        + token , function (response) {
+        console.log('statusCode:', response.statusCode);
+        console.log('headers:', response.headers);
+        response.setEncoding('utf-8');
+        // console.log(response);
+        response.on('data', async function (chunk) {
+            const jsonInfo = JSON.parse(chunk);
+            console.log(chunk);
+            const id = jsonInfo.sub;
+            const user = await User.findOne({"social_id" : id});
+            if (!user)  {
+                var newUser = User();
+                newUser.social_id = jsonInfo.sub;
+                newUser.name = jsonInfo.name;
+                newUser.email = jsonInfo.email;
+                newUser.img_avatar = jsonInfo.picture;
+                newUser.fcm_token = fcm_token
+                await newUser.generateAuthToken()
+                res.send({
+                    status: true,
+                    message: "success",
+                    data: newUser
+                });
+            } else {
+                user.fcm_token = fcm_token
+                await user.generateAuthToken()
+                res.send({
+                    status: true,
+                    message: "success",
+                    data: user
+                });
+            }
+        });
+    }).on('error', (e) => {
+        // console.error(e);
     });
 });
 
