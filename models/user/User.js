@@ -9,6 +9,10 @@ const user_schema = mongoose.Schema({
         required: true,
         trim: true
     },
+    social_id: {
+        type: String,
+        trim: true
+    },
     email: {
         type: String,
         required: true,
@@ -37,7 +41,6 @@ const user_schema = mongoose.Schema({
     },
     password: {
         type: String,
-        required: true,
         minLength: 7
     },
     phone: {

@@ -4,6 +4,10 @@ const User = mongoose.model("User")
 const bcrypt = require("bcryptjs")
 const auth = require("../middleware/auth")
 const admin = require("../middleware/admin")
+const https = require('https');
+const configAuth = require("../config/config");
+const StringDecoder = require('string_decoder').StringDecoder;
+const d = new StringDecoder('utf8');
 
 router.post("/", async (req, res) => {
     const user = new User(req.body)
@@ -15,7 +19,7 @@ router.post("/", async (req, res) => {
     })
 })
 
-router.post("/change_password", auth, async (req, res) => {
+router.put("/change_password", auth, async (req, res) => {
     const user = req.user
     const password = req.user.password
     const {old_password, new_password} = req.body
@@ -37,7 +41,7 @@ router.post("/change_password", auth, async (req, res) => {
     }
 })
 
-router.post("/change_avatar", auth, async (req, res) => {
+router.put("/change_avatar", auth, async (req, res) => {
     const user = req.user
     const {avatar} = req.body
     user.img_avatar = avatar
@@ -50,7 +54,7 @@ router.post("/change_avatar", auth, async (req, res) => {
     })
 })
 
-router.post("/change_background", auth, async (req, res) => {
+router.put("/change_background", auth, async (req, res) => {
     const user = req.user
     const {background} = req.body
     user.img_background = background
@@ -72,7 +76,7 @@ router.get("/:idUser", auth, async (req, res) => {
     })
 })
 
-router.post("/change_public_info", auth, async (req, res) => {
+router.put("/change_public_info", auth, async (req, res) => {
     const user = req.user
     const {learn_at, location_at, phone} = req.body
     user.learn_at = learn_at
@@ -87,8 +91,8 @@ router.post("/change_public_info", auth, async (req, res) => {
     })
 })
 
-router.post("/login", async (req, res) => {
-    const {email, password, device_type, fcm_token} = req.body
+router.put("/login", async (req, res) => {
+    const {email, password, fcm_token} = req.body
     console.log(email);
     console.log(password);
     // Search for a user by email and password.
@@ -101,7 +105,6 @@ router.post("/login", async (req, res) => {
         throw new Error("Invalid login credentials")
     }
     const token = await user.generateAuthToken()
-    user.device_type = device_type
     user.token = token
     user.fcm_token = fcm_token
     await user.save()
@@ -112,7 +115,7 @@ router.post("/login", async (req, res) => {
     })
 })
 
-router.post("/update_fcm_token", auth, async (req, res) => {
+router.put("/update_fcm_token", auth, async (req, res) => {
     const {fcm_token} = req.body;
     user.fcm_token = fcm_token;
     await user.save()
@@ -122,7 +125,7 @@ router.post("/update_fcm_token", auth, async (req, res) => {
     })
 })
 
-router.post("/logout", auth, async (req, res) => {
+router.get("/logout", auth, async (req, res) => {
     const user = req.user;
     req.user.fcm_token = "";
     user.token = "";
@@ -133,7 +136,7 @@ router.post("/logout", auth, async (req, res) => {
     })
 })
 
-router.post("/admin_login", async(req, res) => {
+router.put("/admin_login", async(req, res) => {
     const {email, password, fcm_token} = req.body
     const user = await (User.findOne({email}))
     if (!user)  {
@@ -156,7 +159,7 @@ router.post("/admin_login", async(req, res) => {
     })
 })
 
-router.post("/admin", admin, async (req, res) => {
+router.get("/admin", admin, async (req, res) => {
     const super_admin = req.user
     if (!super_admin.is_super_admin)   {
         throw new Error("Invalid authority")
@@ -201,6 +204,53 @@ router.post("/length", async (req, res) => {    // NOTE: POST works while GET do
         })
     })
 })
+  
 
+router.post('/facebook', function(req, res) {
+    const {token, fcm_token} = req.body;
+    console.log(token);
+    https.get("https://graph.facebook.com/me?fields=id,name,email,picture&access_token=" 
+        + token 
+        + "&client_id=" + configAuth.facebookAuth.clientID
+        + "&client_secret=" + configAuth.facebookAuth.clientSecret
+        + "&grant_type=client_credentials", function (response) {
+        console.log('statusCode:', response.statusCode);
+        console.log('headers:', response.headers);
+        response.setEncoding('utf-8');
+        response.on('data', async function (chunk) {
+            const jsonInfo = JSON.parse(chunk);
+            const id = jsonInfo.id;
+            const user = await User.findOne({"social_id" : id});
+            if (!user)  {
+                var newUser = User();
+                newUser.social_id = jsonInfo.id;
+                newUser.name = jsonInfo.name;
+                newUser.email = jsonInfo.email;
+                newUser.img_avatar = jsonInfo.picture.data.url
+                const token = await newUser.generateAuthToken()
+                newUser.token = token
+                newUser.fcm_token = fcm_token
+                await newUser.save()
+                res.send({
+                    status: true,
+                    message: "success",
+                    data: newUser
+                });
+            } else {
+                const token = await user.generateAuthToken()
+                user.token = token
+                user.fcm_token = fcm_token
+                await user.save()
+                res.send({
+                    status: true,
+                    message: "success",
+                    data: user
+                });
+            }
+        });
+    }).on('error', (e) => {
+        console.error(e);
+    });
+});
 
 module.exports = router;
