@@ -15,8 +15,6 @@ const user_schema = mongoose.Schema({
     },
     email: {
         type: String,
-        required: true,
-        unique: false,
         lowercase: true,
         validate: value => {
             if (!validator.isEmail(value)) {
@@ -24,14 +22,7 @@ const user_schema = mongoose.Schema({
             }
         }
     },
-    image_url: {
-        type: String
-    },
     img_avatar: {
-        type: String,
-        required: false
-    },
-    img_background: {
         type: String,
         required: false
     },
@@ -42,15 +33,6 @@ const user_schema = mongoose.Schema({
     password: {
         type: String,
         minLength: 7
-    },
-    phone: {
-        type: String,
-        unique: true,
-        validate: value => {
-            if (!validator.isMobilePhone(value, 'vi-VN')) {
-                throw new Error({error: 'Invalid Phone number'})
-            }
-        }
     },
     learn_at: {
         type: String,

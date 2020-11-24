@@ -9,25 +9,6 @@ const Exercise = require("../models/exercise/Exercise")
 const Video = mongoose.model("Video")
 var ObjectID = require("mongodb").ObjectID
 
-router.post("/list_course", async (req, res) => {
-    const {offset, limit} = req.body
-    const courses = await Course.find({}).skip(offset).limit(limit)
-    res.send({
-        status  : true,
-        message : null,
-        data    : courses
-    })
-})
-
-router.get("/all_course", async (req, res) => {
-    const courses = await Course.find({})
-    res.send({
-        status  : true,
-        message : null,
-        data    : courses
-    })
-})
-
 router.post("/list_theory", async (req, res) => {
     const {id_course, offset, limit} = req.body
     const theories = await Theory.find({course : id_course}).populate().skip(offset).limit(limit)

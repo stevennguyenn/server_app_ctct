@@ -54,19 +54,6 @@ router.put("/change_avatar", auth, async (req, res) => {
     })
 })
 
-router.put("/change_background", auth, async (req, res) => {
-    const user = req.user
-    const {background} = req.body
-    user.img_background = background
-    user.updated_at = Date.now();
-    await user.save()
-    res.send({
-        status  : true,
-        message : null,
-        data    : user
-    })
-})
-
 router.get("/:idUser", auth, async (req, res) => {
     const user = await User.findOne({_id: req.params.idUser})
     res.send({

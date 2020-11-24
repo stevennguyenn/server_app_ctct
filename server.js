@@ -11,6 +11,9 @@ require("./mongo")
 require("./models/Comment")
 require("./models/user/User")
 require("./models/Course")
+require("./models/subject/Subject")
+require("./models/UserJoinCourse")
+require("./models/UserJoinSubject")
 require("./models/theory/Theory")
 require("./models/LikeTheory")
 require("./models/Image")
@@ -30,11 +33,13 @@ app.use(morgan('dev'))
 app.use(express.json({limit: '50mb'}))
 app.use(bodyParser.urlencoded({limit: '50mb', extended: true}))
 app.use("/users", require("./routes/users"))
+app.use("/courses", require("./routes/courses"))
 app.use("/theories", require("./routes/theories"))
 app.use("/upload", require("./routes/upload"))
 app.use("/exercises", require("./routes/exercises"))
 app.use("/results", require("./routes/results"))
 app.use("/videos", require("./routes/videos"))
+app.use("/subjects", require("./routes/subjects"))
 app.use("/notifications", require("./routes/notifications"))
 app.use(express.static(__dirname));
 
@@ -64,5 +69,5 @@ if (app.get("env") == "production") {
 }
 
 app.listen(process.env.PORT || 3000, function() {
-    console.log("Server listion port " + process.env.PORT);
+    console.log("Server listen port " + process.env.PORT);
 })
