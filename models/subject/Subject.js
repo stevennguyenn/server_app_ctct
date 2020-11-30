@@ -11,6 +11,9 @@ const subject_schema = mongoose.Schema({
             ref: "Course"
         }
     ],
+    students: {
+        type: Number,
+    },
     created_at: {
         type: Date,
         default: Date.now

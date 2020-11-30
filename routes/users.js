@@ -166,10 +166,9 @@ router.get("/admin", admin, async (req, res) => {
     })
 })
 
-router.get("/", admin, async (req, res) => {
-    const offset = Number(req.query.offset)
-    const num = Number(req.query.number)
-    const users = await User.find().populate().skip(offset).limit(num)
+router.get("/", async (req, res) => {
+    const page = Number(req.query.page)
+    const users = await User.find().populate().skip(page).limit(1)
     res.send({
         status  : true,
         message : null,
@@ -177,8 +176,7 @@ router.get("/", admin, async (req, res) => {
     })
 })
 
-router.post("/length", async (req, res) => {    // NOTE: POST works while GET doesn't and I don't understand why??????
-    console.log("something")
+router.post("/page", async (req, res) => {
     await User.countDocuments({}, (err, result) => {
         if (err)    {
             console.log(err)

@@ -44,7 +44,7 @@ router.get("/:idSubject", auth, async (req, res) => {
   console.log(userId);
   const courses = await Course.find({
     id_subject: ObjectID(req.params.idSubject),
-  });
+  }).populate({path: "author", select: "_id name img_avatar"});
   var listCourseUserJoin = [];
   if (userId != "" && userId != null) {
     const resultUserJoinCourse = await UserJoinCourse.find({
