@@ -117,8 +117,6 @@ router.post("/user_join_course", auth, async (req, res) => {
 router.delete("/user_leave_course/:course_id", auth, async (req, res) => {
   const course_id = req.params.course_id;
   const user_id = req.user._id;
-  console.log(course_id);
-  // console.log(user_id);
   await UserJoinCourse.deleteOne({
     $and: [{ course: ObjectID(course_id) }, { user: ObjectID(user_id) }],
   });
@@ -126,6 +124,23 @@ router.delete("/user_leave_course/:course_id", auth, async (req, res) => {
     status: true,
     message: null,
     data: true,
+  });
+});
+
+router.get("/get_status_user_join_course", auth, async (req, res) => {
+  const course_id = req.query.course_id;
+  const user_id = req.user._id;
+  const result = await UserJoinCourse.find({
+    $and: [{ course: ObjectID(course_id) }, { user: ObjectID(user_id) }],
+  });
+  var status = false;
+  if (result != null) {
+    status = true;
+  }
+  res.send({
+    status: true,
+    message: null,
+    data: status,
   });
 });
 
