@@ -2,10 +2,9 @@ const router = require("express").Router();
 const mongoose = require("mongoose");
 const Subject = mongoose.model("Subject");
 const UserJoinSubject = mongoose.model("UserJoinSubject");
-var ObjectID = require("mongodb").ObjectID;
+const ObjectID = require("mongodb").ObjectID;
 const Course = mongoose.model("Course");
 const UserJoinCourse = mongoose.model("UserJoinCourse");
-var ObjectID = require("mongodb").ObjectID;
 const auth = require("../middleware/auth");
 
 router.get("/", async (req, res) => {
@@ -98,6 +97,35 @@ router.post("/", async (req, res) => {
     status: true,
     message: null,
     data: "Success",
+  });
+});
+
+router.post("/user_join_course", auth, async (req, res) => {
+  const { course_id } = req.body;
+  const user_id = req.user._id;
+  const userJoinCourse = new UserJoinCourse();
+  userJoinCourse.user = user_id;
+  userJoinCourse.course = course_id;
+  await userJoinCourse.save();
+  res.send({
+    status: true,
+    message: null,
+    data: userJoinCourse,
+  });
+});
+
+router.delete("/user_leave_course/:course_id", auth, async (req, res) => {
+  const course_id = req.params.course_id;
+  const user_id = req.user._id;
+  console.log(course_id);
+  // console.log(user_id);
+  await UserJoinCourse.deleteOne({
+    $and: [{ course: ObjectID(course_id) }, { user: ObjectID(user_id) }],
+  });
+  res.send({
+    status: true,
+    message: null,
+    data: true,
   });
 });
 
