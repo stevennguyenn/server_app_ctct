@@ -44,7 +44,7 @@ router.get("/:idSubject", auth, async (req, res) => {
   console.log(userId);
   const courses = await Course.find({
     id_subject: ObjectID(req.params.idSubject),
-  }).populate({path: "author", select: "_id name img_avatar"});
+  }).populate({ path: "author", select: "_id name img_avatar" });
   var listCourseUserJoin = [];
   if (userId != "" && userId != null) {
     const resultUserJoinCourse = await UserJoinCourse.find({
@@ -73,6 +73,18 @@ router.get("/:idSubject", auth, async (req, res) => {
       courses: courses,
       status_join: statusJoin,
     },
+  });
+});
+
+router.get("/teacher/:user_id", async (req, res) => {
+  const user_id = req.params.user_id;
+  const courses = await Course.find({
+    author: ObjectID(user_id),
+  }).select("_id name students created_at");
+  res.send({
+    status: true,
+    message: null,
+    data: courses,
   });
 });
 
