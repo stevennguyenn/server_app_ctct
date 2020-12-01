@@ -107,6 +107,9 @@ router.post("/user_join_course", auth, async (req, res) => {
   userJoinCourse.user = user_id;
   userJoinCourse.course = course_id;
   await userJoinCourse.save();
+  const course = await Course.findById(course_id);
+  course.students = course.students + 1;
+  await course.save();
   res.send({
     status: true,
     message: null,
@@ -120,6 +123,9 @@ router.delete("/user_leave_course/:course_id", auth, async (req, res) => {
   await UserJoinCourse.deleteOne({
     $and: [{ course: ObjectID(course_id) }, { user: ObjectID(user_id) }],
   });
+  const course = await Course.findById(course_id);
+  course.students = course.students - 1;
+  await course.save();
   res.send({
     status: true,
     message: null,
