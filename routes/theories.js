@@ -9,41 +9,14 @@ const Exercise = require("../models/exercise/Exercise");
 const Video = mongoose.model("Video");
 var ObjectID = require("mongodb").ObjectID;
 
-router.post("/list_theory", async (req, res) => {
-  const { id_course, offset, limit } = req.body;
-  const theories = await Theory.find({ course: id_course })
+router.get("/", async (req, res) => {
+  const id_course = req.query.id_course;
+  const offset = Number(req.query.offset);
+  const limit = Number(req.query);
+  const theories = await Theory.find({ course: ObjectID(id_course) })
     .populate()
     .skip(offset)
     .limit(limit);
-  res.send({
-    status: true,
-    message: null,
-    data: theories,
-  });
-});
-
-router.post("/list_theory/search", async (req, res) => {
-  const { id_course, offset, limit, text } = req.body;
-  let theories = await Theory.find({
-    course: id_course,
-    name: { $regex: new RegExp(text, "i") },
-  })
-    .populate()
-    .skip(offset)
-    .limit(limit);
-  theories.sort((a, b) => {
-    if (
-      a.name.toLocaleLowerCase().lastIndexOf(text.toLocaleLowerCase(), 0) === 0
-    ) {
-      return -1;
-    }
-    if (
-      b.name.toLocaleLowerCase().lastIndexOf(text.toLocaleLowerCase(), 0) === 0
-    ) {
-      return 1;
-    }
-    return 0;
-  });
   res.send({
     status: true,
     message: null,
@@ -85,61 +58,7 @@ router.post("/like", auth, async (req, res) => {
   }
   res.send({
     status: true,
-    message: "Successful",
-  });
-});
-
-router.post("/comments", auth, async (req, res) => {
-  const { id_theory, offset, limit } = req.body;
-  const comments = await Comment.find({
-    $and: [{ theory: id_theory }, { is_parent: true }],
-  })
-    .populate({
-      path: "children",
-      populate: {
-        path: "user",
-        select: "_id name email",
-      },
-    })
-    .populate({
-      path: "user",
-      select: "_id name email",
-    })
-    .skip(offset)
-    .limit(limit);
-  res.send({
-    status: true,
-    message: "Successful",
-    data: comments,
-  });
-});
-
-router.post("/add_comment", auth, async (req, res) => {
-  const id_user = req.user._id;
-  const { id_theory, id_parent, content } = req.body;
-  const comment = new Comment();
-  comment.user = id_user;
-  comment.content = content;
-  comment.theory = id_theory;
-  comment.children = [];
-  if (id_parent == null) {
-    comment.is_parent = true;
-    await comment.save();
-  } else {
-    const parent_comment = await Comment.findOne({ _id: id_parent });
-    comment.is_parent = false;
-    await comment.save();
-    parent_comment.children.push(comment);
-    await parent_comment.save();
-  }
-  const commentPopulate = await Comment.populate(comment, {
-    path: "user",
-    select: "_id name email",
-  });
-  res.send({
-    status: true,
-    message: "Successful",
-    data: commentPopulate,
+    message: "Success",
   });
 });
 
