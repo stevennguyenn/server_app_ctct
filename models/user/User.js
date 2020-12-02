@@ -26,10 +26,6 @@ const user_schema = mongoose.Schema({
     type: String,
     required: false,
   },
-  teacher: {
-    type: Boolean,
-    required: false,
-  },
   password: {
     type: String,
     minLength: 7,
@@ -67,14 +63,10 @@ const user_schema = mongoose.Schema({
     type: Date,
     default: Date.now,
   },
-  is_admin: {
-    type: Boolean,
-    default: false,
-  },
-  is_super_admin: {
-    type: Boolean,
-    default: false,
-  },
+  type: {
+    type: ["student", "teacher", "admin"],
+    default: "student",
+  }
 });
 
 user_schema.methods.toJSON = function () {

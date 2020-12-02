@@ -146,29 +146,11 @@ router.put("/admin_login", async(req, res) => {
     })
 })
 
-router.get("/admin", admin, async (req, res) => {
-    const super_admin = req.user
-    if (!super_admin.is_super_admin)   {
-        throw new Error("Invalid authority")
-    }
-    const {email} = req.body
-    const new_admin = await User.findOne({email})
-    if (!new_admin)  {
-        throw new Error("Invalid email")
-    }
-    if (new_admin.is_admin) {
-        throw new Error("Already an admin")
-    }
-    new_admin.is_admin = true
-    res.status(201).send({
-        status: true,
-        message: "Success"
-    })
-})
-
 router.get("/", async (req, res) => {
-    const page = Number(req.query.page)
-    const users = await User.find().populate().skip(page).limit(1)
+    const page = Number(req.query.page);
+    const type = req.query.type;
+    console.log(type);
+    const users = await User.find({type: type}).populate().skip(page).limit(1)
     res.send({
         status  : true,
         message : null,
@@ -177,7 +159,9 @@ router.get("/", async (req, res) => {
 })
 
 router.post("/page", async (req, res) => {
-    await User.countDocuments({}, (err, result) => {
+    const {type} = req.body;
+    console.log(type);
+    await User.countDocuments({type: type}, (err, result) => {
         if (err)    {
             console.log(err)
             res.send(500)
