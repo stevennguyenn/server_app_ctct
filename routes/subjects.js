@@ -45,21 +45,16 @@ router.get("/:idSubject", auth, async (req, res) => {
     id_subject: ObjectID(req.params.idSubject),
   }).populate({ path: "author", select: "_id name img_avatar" });
   var listCourseUserJoin = [];
-  if (userId != "" && userId != null) {
-    const resultUserJoinCourse = await UserJoinCourse.find({
-      user: ObjectID(userId),
-    });
-    listCourseUserJoin = resultUserJoinCourse.map(function (e) {
-      return e.course;
-    });
-  }
+  const resultUserJoinCourse = await UserJoinCourse.find({
+    user: userId,
+  });
+  listCourseUserJoin = resultUserJoinCourse.map(function (e) {
+    return e.course.toString();
+  });
   var statusJoin = [];
-  for (const item in courses) {
-    if (userId == "" || userId == null) {
-      statusJoin.push(0);
-      continue;
-    }
-    if (listCourseUserJoin.includes(item._id)) {
+  for (const index in courses) {
+    console.log(courses[index]._id.toString());
+    if (listCourseUserJoin.includes(courses[index]._id.toString())) {
       statusJoin.push(2);
     } else {
       statusJoin.push(1);
@@ -133,21 +128,25 @@ router.delete("/user_leave_course/:course_id", auth, async (req, res) => {
   });
 });
 
-router.get("/get_status_user_join_course", auth, async (req, res) => {
-  const course_id = req.query.course_id;
-  const user_id = req.user._id;
-  const result = await UserJoinCourse.find({
-    $and: [{ course: ObjectID(course_id) }, { user: ObjectID(user_id) }],
-  });
-  var status = false;
-  if (result != null) {
-    status = true;
+router.get(
+  "/get_status_user_join_course/:course_id",
+  auth,
+  async (req, res) => {
+    const course_id = req.params.course_id;
+    const user_id = req.user._id;
+    const result = await UserJoinCourse.find({
+      $and: [{ course: ObjectID(course_id) }, { user: ObjectID(user_id) }],
+    });
+    var status = 1;
+    if (result.length > 0) {
+      status = 2;
+    }
+    res.send({
+      status: true,
+      message: null,
+      data: status,
+    });
   }
-  res.send({
-    status: true,
-    message: null,
-    data: status,
-  });
-});
+);
 
 module.exports = router;
