@@ -37,7 +37,7 @@ router.post("/", auth, async (req, res) => {
   const comment = new Comment();
   comment.user = id_user;
   comment.content = content;
-  comment.theory = id;
+  comment.id_content = id;
   comment.type = type;
   comment.children = [];
   if (id_parent == null) {
