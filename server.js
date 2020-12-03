@@ -13,15 +13,13 @@ require("./models/user/User");
 require("./models/Course");
 require("./models/subject/Subject");
 require("./models/UserJoinCourse");
-require("./models/UserJoinSubject");
 require("./models/theory/Theory");
-require("./models/LikeTheory");
 require("./models/Image");
 require("./models/exercise/Exercise");
 require("./models/exercise/Question");
 require("./models/result/Result");
 require("./models/video/Video");
-require("./models/LikeVideo");
+require("./models/Like");
 require("./models/notification/Notification");
 
 //middleware

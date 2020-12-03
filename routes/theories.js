@@ -2,7 +2,7 @@ const router = require("express").Router();
 const mongoose = require("mongoose");
 const Course = mongoose.model("Course");
 const Theory = mongoose.model("Theory");
-const LikeTheory = mongoose.model("LikeTheory");
+const Like = mongoose.model("Like");
 const Comment = mongoose.model("Comment");
 const auth = require("../middleware/auth");
 const Exercise = require("../models/exercise/Exercise");
@@ -29,7 +29,7 @@ router.get("/:idTheory", auth, async (req, res) => {
   const idTheory = req.params.idTheory;
   const theory = await Theory.findOne({ _id: idTheory });
   var liked = false;
-  const isLike = await LikeTheory.findOne({
+  const isLike = await Like.findOne({
     $and: [{ id_user: idUser }, { id_theory: idTheory }],
   }).select("+like");
   if (isLike != null) {
@@ -47,12 +47,13 @@ router.post("/like", auth, async (req, res) => {
   const id_user = req.user._id;
   const { id_theory, like } = req.body;
   if (like) {
-    const like = LikeTheory();
+    const like = Like();
     like.id_user = id_user;
-    like.id_theory = id_theory;
+    like.id_content = id_theory;
+    like.type = "theory";
     await like.save();
   } else {
-    await LikeTheory.deleteOne({
+    await Like.deleteOne({
       $and: [{ id_user: id_user }, { id_theory: id_theory }],
     });
   }

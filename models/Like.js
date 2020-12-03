@@ -1,12 +1,17 @@
 const mongoose = require("mongoose");
 
-const like_theory_schema = mongoose.Schema({
+const like_schema = mongoose.Schema({
     id_user: {
         type: mongoose.Schema.Types.ObjectId,
         required: true
     },
-    id_theory: {
+    id_content: {
         type: mongoose.Schema.Types.ObjectId,
+        required: true
+    },
+    type: {
+        type: String,
+        enum: ["theory", "exercise", "video"],
         required: true
     },
     created_at: {
@@ -19,4 +24,4 @@ const like_theory_schema = mongoose.Schema({
     }
 })
  
-module.exports = mongoose.model("LikeTheory", like_theory_schema);
+module.exports = mongoose.model("Like", like_schema);

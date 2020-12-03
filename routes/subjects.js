@@ -1,7 +1,6 @@
 const router = require("express").Router();
 const mongoose = require("mongoose");
 const Subject = mongoose.model("Subject");
-const UserJoinSubject = mongoose.model("UserJoinSubject");
 const ObjectID = require("mongodb").ObjectID;
 const Course = mongoose.model("Course");
 const UserJoinCourse = mongoose.model("UserJoinCourse");

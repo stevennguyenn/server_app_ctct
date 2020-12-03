@@ -2,7 +2,7 @@ const router = require("express").Router()
 const mongoose = require("mongoose")
 const Course = mongoose.model("Course")
 const Video = mongoose.model("Video")
-const LikeVideo = mongoose.model("LikeVideo")
+const Like = mongoose.model("Like")
 const Comment = mongoose.model("Comment")
 const auth = require("../middleware/auth")
 const Theory = require("../models/theory/Theory")
@@ -39,7 +39,7 @@ router.get("/:id_video", auth, async function(req, res) {
     const id_video = req.params.id_video
     const id_user = req.user._id
     const video = await Video.findOne({_id: id_video})
-    const user_like = await LikeVideo.findOne({$and: [{id_user: id_user}, {id_video: id_video}]})
+    const user_like = await Like.findOne({$and: [{id_user: id_user}, {id_video: id_video}]})
     if (user_like != null){
         video.is_like = true
     } else {
@@ -54,12 +54,14 @@ router.get("/:id_video", auth, async function(req, res) {
     })
 })
 
-router.post("/video_course", async function(req, res) {
-    const {offset, limit, id_theory} = req.body
-    const list_video = await Video.find({course: id_theory}).skip(offset).limit(limit)
+router.get("/", async function(req, res) {
+    const offset = Number(req.query.offset);
+    const limit = Number(req.query.limit);
+    const id_course = req.query.id_course;
+    const list_video = await Video.find({course: id_course}).skip(offset).limit(limit)
     res.send({
         status  : true,
-        message : "Successful",
+        message : null,
         data    : list_video
     })
 })
@@ -78,65 +80,17 @@ router.post("/like", auth, async function(req, res) {
     const id_user = req.user._id;
     const {id_video, like} = req.body
     if (like) {
-        const like = LikeVideo()
+        const like = Like()
         like.id_user = id_user
-        like.id_video = id_video
+        like.id_content = id_video
+        like.type = "video"
         await like.save()
     } else {
-        await LikeVideo.deleteOne({$and: [{id_user: id_user}, {id_video: id_video}]})
+        await Like.deleteOne({$and: [{id_user: id_user}, {id_video: id_video}]})
     }
     res.send({
         status  : true,
         message : "Successful",
-    })
-})
-
-
-router.post("/comments", auth, async (req, res) => {
-    const {id_video, offset, limit} = req.body
-    const comments = await Comment.find({$and : [{video: id_video}, {is_parent: true}]})
-                        .skip(offset).limit(limit)
-                        .populate({
-                            path: "children",
-                            populate: {
-                                path: "user",
-                                select: "_id name email img_avatar",
-                            }
-                        })
-                        .populate({
-                            path: "user",
-                            select: "_id name email img_avatar",
-                        })
-    res.send({
-        status  : true,
-        message : "Successful",
-        data: comments
-    })
-})
-
-router.post("/add_comment", auth, async (req, res) => {
-    const id_user = req.user._id;
-    const {id_video, id_parent, content} = req.body
-    const comment = new Comment()
-    comment.user = id_user
-    comment.content = content
-    comment.video = id_video
-    comment.children = []
-    if (id_parent == null) {
-        comment.is_parent = true
-        await comment.save();
-    } else {
-        const parent_comment = await Comment.findOne({_id: id_parent})
-        comment.is_parent = false
-        await comment.save()
-        parent_comment.children.push(comment)
-        await parent_comment.save()
-    }
-    const commentPopulate = await Comment.populate(comment, {path: "user", select: "_id name email img_avatar"})
-    res.send({
-        status  : true,
-        message : "Successful",
-        data    : commentPopulate
     })
 })
 
@@ -149,8 +103,6 @@ router.post("/relate_document", auth, async (req, res) => {
         data    : theories
     })
 })
-
-
 
 module.exports = router;
 
