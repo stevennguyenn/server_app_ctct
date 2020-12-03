@@ -25,7 +25,7 @@ const video_schema = mongoose.Schema({
             ref: "Theory"
         }
     ],
-    url: {
+    youtube_id: {
         type: String,
         required: true,
     },
