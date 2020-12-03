@@ -21,6 +21,18 @@ const course_schema = mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "User"
     },
+    number_theory: {
+        type: Number,
+        default: 0,
+    },
+    number_exercise: {
+        type: Number,
+        default: 0,
+    },
+    number_video: {
+        type: Number,
+        default: 0,
+    },
     updated_at: {
         type: Date,
         default: Date.now

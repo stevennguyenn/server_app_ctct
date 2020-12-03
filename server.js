@@ -32,6 +32,7 @@ app.use(express.json({ limit: "50mb" }));
 app.use(bodyParser.urlencoded({ limit: "50mb", extended: true }));
 app.use("/users", require("./routes/users"));
 app.use("/theories", require("./routes/theories"));
+app.use("/courses", require("./routes/courses"));
 app.use("/comments", require("./routes/comments"));
 app.use("/upload", require("./routes/upload"));
 app.use("/exercises", require("./routes/exercises"));

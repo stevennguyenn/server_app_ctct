@@ -23,7 +23,7 @@ router.get("/:id_video", auth, async function(req, res) {
     const id_video = req.params.id_video
     const id_user = req.user._id
     const video = await Video.findOne({_id: id_video})
-    const user_like = await Like.findOne({$and: [{id_user: id_user}, {id: id_video}]})
+    const user_like = await Like.findOne({$and: [{id_user: id_user}, {id_content: id_video}]})
     if (user_like != null){
         video.is_like = true
     } else {
@@ -35,6 +35,24 @@ router.get("/:id_video", auth, async function(req, res) {
         status  : true,
         message : "Successful",
         data    : video
+    })
+})
+
+router.post("/like", auth, async function(req, res) {
+    const id_user = req.user._id;
+    const {id_video, like} = req.body
+    if (like) {
+        const like = Like()
+        like.id_user = id_user
+        like.id_content = id_video
+        like.type = "video"
+        await like.save()
+    } else {
+        await Like.deleteOne({$and: [{id_user: id_user}, {id_content: id_video}]})
+    }
+    res.send({
+        status  : true,
+        message : "Successful",
     })
 })
 
@@ -73,24 +91,6 @@ router.post("/relate_video_course", async function(req, res) {
         status  : true,
         message : "Successful",
         data    : list_video
-    })
-})
-
-router.post("/like", auth, async function(req, res) {
-    const id_user = req.user._id;
-    const {id_video, like} = req.body
-    if (like) {
-        const like = Like()
-        like.id_user = id_user
-        like.id_content = id_video
-        like.type = "video"
-        await like.save()
-    } else {
-        await Like.deleteOne({$and: [{id_user: id_user}, {id_video: id_video}]})
-    }
-    res.send({
-        status  : true,
-        message : "Successful",
     })
 })
 

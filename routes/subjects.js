@@ -7,8 +7,9 @@ const UserJoinCourse = mongoose.model("UserJoinCourse");
 const auth = require("../middleware/auth");
 
 router.get("/", async (req, res) => {
-  const userId = req.query.user_id;
-  const subjects = await Subject.find({});
+  const offset = Number(req.query.offset);
+  const limit = Number(req.query.limit);
+  const subjects = await Subject.find({}).skip(offset).limit(limit);
   //   var listSubjectUserJoin = [];
   //   if (userId != "" && userId != null) {
   //     const resultUserJoinSubject = await UserJoinSubject.find({
