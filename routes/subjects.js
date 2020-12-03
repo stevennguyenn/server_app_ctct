@@ -149,4 +149,18 @@ router.get(
   }
 );
 
+router.post("/page", async (req, res) => {
+  await Subject.countDocuments({}, (err, result) => {
+      if (err)    {
+          console.log(err)
+          res.send(500)
+      }
+      res.send({
+          status: true,
+          message: null,
+          data: parseInt(result / process.env.limit, 10) + 1
+      })
+  })
+})
+
 module.exports = router;

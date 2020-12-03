@@ -17,4 +17,18 @@ router.get("/", async (req, res) => {
   });
 });
 
+router.post("/page", async (req, res) => {
+    await Course.countDocuments({}, (err, result) => {
+        if (err)    {
+            console.log(err)
+            res.send(500)
+        }
+        res.send({
+            status: true,
+            message: null,
+            data: parseInt(result / process.env.limit, 10) + 1
+        })
+    })
+  })
+
 module.exports = router;
