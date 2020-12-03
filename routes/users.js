@@ -183,19 +183,19 @@ router.post('/facebook', function(req, res) {
         + "&client_id=" + configAuth.facebookAuth.clientID
         + "&client_secret=" + configAuth.facebookAuth.clientSecret
         + "&grant_type=client_credentials", function (response) {
-        console.log('statusCode:', response.statusCode);
-        console.log('headers:', response.headers);
         response.setEncoding('utf-8');
         response.on('data', async function (chunk) {
             const jsonInfo = JSON.parse(chunk);
             const id = jsonInfo.id;
             const user = await User.findOne({"social_id" : id});
+            console.log(user.type);
             if (!user)  {
                 var newUser = User();
                 newUser.social_id = jsonInfo.id;
                 newUser.name = jsonInfo.name;
                 newUser.email = jsonInfo.email;
-                newUser.img_avatar = jsonInfo.picture.data.url
+                newUser.img_avatar = jsonInfo.picture.data.url;
+                newUser.type = "student";
                 const token = await newUser.generateAuthToken()
                 newUser.token = token
                 newUser.fcm_token = fcm_token
@@ -226,8 +226,6 @@ router.post('/google', function(req, res) {
     const {token, fcm_token} = req.body;
     https.get("https://www.googleapis.com/oauth2/v3/userinfo?access_token=" 
         + token , function (response) {
-        console.log('statusCode:', response.statusCode);
-        console.log('headers:', response.headers);
         response.setEncoding('utf-8');
         // console.log(response);
         response.on('data', async function (chunk) {
@@ -241,7 +239,8 @@ router.post('/google', function(req, res) {
                 newUser.name = jsonInfo.name;
                 newUser.email = jsonInfo.email;
                 newUser.img_avatar = jsonInfo.picture;
-                newUser.fcm_token = fcm_token
+                newUser.fcm_token = fcm_token;
+                newUser.type = "student";
                 await newUser.generateAuthToken()
                 res.send({
                     status: true,

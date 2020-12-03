@@ -64,8 +64,10 @@ const user_schema = mongoose.Schema({
     default: Date.now,
   },
   type: {
-    type: ["student", "teacher", "admin"],
+    type: String,
+    enum : ["student", "teacher", "admin"],
     default: "student",
+    required: true
   }
 });
 
