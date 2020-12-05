@@ -1,6 +1,6 @@
 const mongoose = require("mongoose")
 
-const exercise_schema = mongoose.Schema({
+const question_schema = mongoose.Schema({
     content: {
         type: String,
         required: true
@@ -47,8 +47,7 @@ const exercise_schema = mongoose.Schema({
     }, 
     created_at: {
         type: Date,
-        default: Date.now,
-        select: false
+        default: Date.now
     },
     updated_at: {
         type: Date,
@@ -61,4 +60,4 @@ const exercise_schema = mongoose.Schema({
     }
 }, { versionKey: false })
  
-module.exports = mongoose.model("Question", exercise_schema)
+module.exports = mongoose.model("Question", question_schema)

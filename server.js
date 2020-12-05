@@ -39,6 +39,7 @@ app.use("/exercises", require("./routes/exercises"));
 app.use("/results", require("./routes/results"));
 app.use("/videos", require("./routes/videos"));
 app.use("/subjects", require("./routes/subjects"));
+app.use("/questions", require("./routes/questions"));
 app.use("/notifications", require("./routes/notifications"));
 app.use(express.static(__dirname));
 
