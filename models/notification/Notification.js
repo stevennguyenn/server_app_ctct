@@ -1,25 +1,30 @@
 const mongoose = require("mongoose");
 
 const notification_schema = mongoose.Schema({
-    from: {
+    id_course: {
         type: mongoose.Schema.Types.ObjectId,
-        required: true,
-        ref: "User"
+        ref: "Course"
     },
-    to: {
+    id_user: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "User"
-    },
-    toAll: {
-        type: Boolean,
+        ref: "User",
     },
     type: {
         type: String,
-        require: true,
+        enum: ["theory", "exercise", "video", "reference_document", "comment"],
+        required: true,
+    },
+    id_data: {
+        type: mongoose.Schema.Types.ObjectId,
+        required: true,
+    }, 
+    title: {
+        type: String,
+        required: true,
     },
     message: {
         type: String,
-        require: true,
+        required: true,
     },
     created_at: {
         type: Date,

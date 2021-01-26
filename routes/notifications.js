@@ -2,6 +2,7 @@ const router = require("express").Router();
 const mongoose = require("mongoose");
 const auth = require("../middleware/auth");
 const Notification = mongoose.model("Notification");
+const UserJoinCourse = mongoose.model("UserJoinCourse");
 const admin = require("firebase-admin");
 let serviceAccount = require("../ctct-16b49-firebase-adminsdk-8lesv-5eba9083a5.json");
 
@@ -25,20 +26,13 @@ var options = {
   timeToLive: 60 * 60 * 24,
 };
 
-router.post("/list_notification", auth, async (req, res) => {
-  const { offset, limit } = req.body;
-  const list_result = await Notification.find({ to: req.user._id })
-    .populate({
-      path: "from",
-      select: "_id name img_avatar",
-    })
-    .populate({
-      path: "to",
-      select: "_id name img_avatar",
-    })
-    .skip(offset)
-    .limit(limit)
-    .sort({ created_at: -1 });
+router.get("/", auth, async (req, res) => {
+  const offset = Number(req.query.offset);
+  const limit = Number(req.query.limit);
+  const idUser = req.user._id;
+  const listCourseUserJoin = await UserJoinCourse.find({user: idUser});
+  const listIdCourse = listCourseUserJoin.map((e) => e.course);
+  const list_result = await Notification.find({$or:[{ id_user: req.user._id}, {id_course: listIdCourse}]}).skip(offset).limit(limit);
   res.send({
     status: true,
     message: null,
