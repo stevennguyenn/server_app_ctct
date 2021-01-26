@@ -21,6 +21,7 @@ require("./models/result/Result");
 require("./models/video/Video");
 require("./models/Like");
 require("./models/notification/Notification");
+require("./models/ReferenceCourse");
 
 //middleware
 app.use(cors());
@@ -41,6 +42,7 @@ app.use("/videos", require("./routes/videos"));
 app.use("/subjects", require("./routes/subjects"));
 app.use("/questions", require("./routes/questions"));
 app.use("/notifications", require("./routes/notifications"));
+app.use("/reference_course", require("./routes/reference_course"));
 app.use(express.static(__dirname));
 
 //not found router

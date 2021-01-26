@@ -10,27 +10,16 @@ router.get("/", async (req, res) => {
   const offset = Number(req.query.offset);
   const limit = Number(req.query.limit);
   const subjects = await Subject.find({}).skip(offset).limit(limit);
-  //   var listSubjectUserJoin = [];
-  //   if (userId != "" && userId != null) {
-  //     const resultUserJoinSubject = await UserJoinSubject.find({
-  //       user: ObjectID(userId),
-  //     });
-  //     listSubjectUserJoin = resultUserJoinSubject.map(function (e) {
-  //       return e.subject;
-  //     });
-  //   }
-  //   var statusJoin = [];
-  //   for (const item in subjects) {
-  //     if (userId == "" || userId == null) {
-  //       statusJoin.push(0);
-  //       continue;
-  //     }
-  //     if (listSubjectUserJoin.includes(item._id)) {
-  //       statusJoin.push(2);
-  //     } else {
-  //       statusJoin.push(1);
-  //     }
-  //   }
+  res.send({
+    status: true,
+    message: null,
+    data: subjects,
+  });
+});
+
+router.get("/subject/:id_subject", async (req, res) => {
+  const id_subject = req.params.id_subject;
+  const subjects = await Subject.find({}).skip(offset).limit(limit);
   res.send({
     status: true,
     message: null,
