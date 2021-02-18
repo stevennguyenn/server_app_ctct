@@ -2,6 +2,8 @@ const router = require("express").Router();
 const mongoose = require("mongoose");
 const ObjectID = require("mongodb").ObjectID;
 const Course = mongoose.model("Course");
+const UserLikeCourse = mongoose.model("Like");
+const UserRateCourse = mongoose.model("UserRateCourse");
 const auth = require("../middleware/auth");
 const UserJoinCourse = mongoose.model("UserJoinCourse");
 
@@ -19,6 +21,59 @@ router.get("/", async (req, res) => {
   });
 });
 
+
+router.get("/more_info/:id_course", auth, async (req, res) => {
+  const id_course = req.params.id_course; 
+  const likeCourse = await UserLikeCourse.find({$and: [{id_user: req.user._id}, {id_content: id_course}]})
+  const rateCourse = await UserRateCourse.find({$and: [{user: req.user._id}, {course: id_course}]})
+  // const likeCourse = await UserLikeCourse.find({id_content: id_course})
+  // const rateCourse = await UserRateCourse.find({course: id_course})
+  const result = {
+    "like": likeCourse != null && likeCourse.length > 0 ? true : false,
+    "rate": rateCourse != null && rateCourse.length > 0 ? true : false
+  }
+  res.send({
+    status: true,
+    message: null,
+    data: result,
+  });
+});
+
+router.post("/user_like_course", auth, async (req, res) => {
+  const {id_course, is_like} = req.body;
+  const id_user = req.user._id; 
+  if (is_like) {
+    const like = UserLikeCourse()
+    like.id_user = id_user
+    like.id_content = id_course
+    like.type = "course"
+    await like.save()
+    const course = await Course.findOne({_id: id_course})
+    const numberLike = course.like
+    course.like = numberLike + 1
+    await course.save()
+    res.send({
+      status: true,
+      message: null,
+      data: course.like,
+    });
+  } else {
+    await UserLikeCourse.deleteOne({
+      $and: [{ id_user: id_user }, { id_content: id_course}],
+    });
+    const course = await Course.findOne({_id: id_course})
+    const numberLike = course.like;
+    if (numberLike > 0) {
+      course.like = numberLike - 1
+    }
+    await course.save()
+    res.send({
+      status: true,
+      message: null,
+      data: course.like,
+    });
+  }
+});
 
 router.get("/subject/:id_subject", async (req, res) => {
   const id_subject = req.params.id_subject;

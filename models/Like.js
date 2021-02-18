@@ -11,7 +11,7 @@ const like_schema = mongoose.Schema({
     },
     type: {
         type: String,
-        enum: ["theory", "exercise", "video"],
+        enum: ["theory", "exercise", "video", "course"],
         required: true
     },
     created_at: {

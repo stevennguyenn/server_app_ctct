@@ -14,6 +14,7 @@ require("./models/Course");
 require("./models/subject/Subject");
 require("./models/UserJoinCourse");
 require("./models/theory/Theory");
+require("./models/UserRateCourse");
 require("./models/Image");
 require("./models/exercise/Exercise");
 require("./models/exercise/Question");

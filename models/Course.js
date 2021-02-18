@@ -1,5 +1,6 @@
 const mongoose = require("mongoose")
 
+var SchemaTypes = mongoose.Schema.Types;
 const course_schema = mongoose.Schema({
     name: {
         type: String,
@@ -36,6 +37,36 @@ const course_schema = mongoose.Schema({
     updated_at: {
         type: Date,
         default: Date.now
+    },
+    intro: {
+        type: String,
+        required: true
+    },
+    struct: {
+        type: String,
+        required: true
+    },
+    service: {
+        type: String,
+        required: true
+    },
+    goal: {
+        type: String,
+        required: true
+    },
+    images: [
+        {
+            type: String,
+            required: true
+        }
+    ],
+    rate: {
+        type: String,
+        required: true,
+    },
+    like: {
+        type: Number,
+        required: true
     },
     __v: {
         type: Number,

@@ -14,6 +14,10 @@ const subject_schema = mongoose.Schema({
     students: {
         type: Number,
     },
+    image: {
+        type: String,
+        require: true
+    },
     created_at: {
         type: Date,
         default: Date.now
