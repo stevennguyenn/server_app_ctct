@@ -104,7 +104,10 @@ router.post("/page", async (req, res) => {
 
   router.post("/userjoin", auth, async (req, res) => {
     let userId = req.user._id;
-    const courses = await UserJoinCourse.find({user: userId}).populate({ path: "course", select: "_id name img_avatar" })
+    const courses = await UserJoinCourse.find({user: userId}).populate({ path: "course", populate: {
+      path: "author",
+      select: "_id name email img_avatar",
+    },})
     res.send({
       status: true,
       message: null,
