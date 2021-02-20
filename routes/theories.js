@@ -80,4 +80,13 @@ router.post("/relate_theory", auth, async (req, res) => {
   });
 });
 
+router.post("/all_course", async (req, res) => {
+  const courses = await Course.find({}).select("_id name")
+  res.send({
+      status  : true,
+      message : null,
+      data    : courses
+  })
+})
+
 module.exports = router;
