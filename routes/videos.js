@@ -3,7 +3,6 @@ const mongoose = require("mongoose")
 const Course = mongoose.model("Course")
 const Video = mongoose.model("Video")
 const Like = mongoose.model("Like")
-const Comment = mongoose.model("Comment")
 const auth = require("../middleware/auth")
 const Theory = require("../models/theory/Theory")
 

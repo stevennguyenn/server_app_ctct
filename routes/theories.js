@@ -3,7 +3,6 @@ const mongoose = require("mongoose");
 const Course = mongoose.model("Course");
 const Theory = mongoose.model("Theory");
 const Like = mongoose.model("Like");
-const Comment = mongoose.model("Comment");
 const auth = require("../middleware/auth");
 const Exercise = require("../models/exercise/Exercise");
 const Video = mongoose.model("Video");
@@ -12,7 +11,7 @@ var ObjectID = require("mongodb").ObjectID;
 router.get("/", async (req, res) => {
   const id_course = req.query.id_course;
   const offset = Number(req.query.offset);
-  const limit = Number(req.query);
+  const limit = Number(req.query.limit);
   const theories = await Theory.find({ course: ObjectID(id_course) })
     .populate()
     .skip(offset)
