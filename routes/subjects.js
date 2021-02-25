@@ -29,7 +29,6 @@ router.get("/subject/:id_subject", async (req, res) => {
 
 router.get("/:idSubject", auth, async (req, res) => {
   const userId = req.user._id;
-  console.log(userId);
   const courses = await Course.find({
     id_subject: ObjectID(req.params.idSubject),
   }).populate({ path: "author", select: "_id name img_avatar" });
@@ -59,15 +58,35 @@ router.get("/:idSubject", auth, async (req, res) => {
   });
 });
 
-router.get("/teacher/:user_id", async (req, res) => {
-  const user_id = req.params.user_id;
+router.get("/teacher/:techer_id", auth, async (req, res) => {
+  const techer_id = req.params.techer_id;
+  const user_id = req.user._id;
   const courses = await Course.find({
-    author: ObjectID(user_id),
-  }).select("_id name students created_at");
+    author: ObjectID(techer_id),
+  }).populate({ path: "author", select: "_id name img_avatar" });
+  var listCourseUserJoin = [];
+  const resultUserJoinCourse = await UserJoinCourse.find({
+    user: user_id,
+  });
+  listCourseUserJoin = resultUserJoinCourse.map(function (e) {
+    return e.course.toString();
+  });
+  var statusJoin = [];
+  for (const index in courses) {
+    console.log(courses[index]._id.toString());
+    if (listCourseUserJoin.includes(courses[index]._id.toString())) {
+      statusJoin.push(2);
+    } else {
+      statusJoin.push(1);
+    }
+  }
   res.send({
     status: true,
     message: null,
-    data: courses,
+    data: {
+      courses: courses,
+      status_join: statusJoin,
+    },
   });
 });
 
@@ -138,18 +157,24 @@ router.get(
   }
 );
 
-router.post("/page", async (req, res) => {
-  await Subject.countDocuments({}, (err, result) => {
-      if (err)    {
-          console.log(err)
-          res.send(500)
-      }
-      res.send({
-          status: true,
-          message: null,
-          data: parseInt(result / process.env.limit, 10) + 1
-      })
-  })
+//for admin
+router.get("/admin/all_subject", async (req, res) => {
+  const offset = Number(req.query.offset);
+  const limit = Number(req.query.limit);
+  const resultPage = await Subject.countDocuments({})
+  const page = parseInt(resultPage / limit, 10) + 1
+  const subjects = await Subject.find({})
+    .populate()
+    .skip(offset)
+    .limit(limit);
+  res.send({
+    status: true,
+    message: null,
+    meta: {
+      "page": page
+    },
+    data: subjects,
+  });
 })
 
 module.exports = router;

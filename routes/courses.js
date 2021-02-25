@@ -87,33 +87,38 @@ router.get("/subject/:id_subject", async (req, res) => {
   });
 });
 
+router.post("/userjoin", auth, async (req, res) => {
+  let userId = req.user._id;
+  const courses = await UserJoinCourse.find({user: userId}).populate({ path: "course", populate: {
+    path: "author",
+    select: "_id name email img_avatar",
+  },})
+  res.send({
+    status: true,
+    message: null,
+    data: courses.map((e) => e.course),
+  });
+})
 
-router.post("/page", async (req, res) => {
-    await Course.countDocuments({}, (err, result) => {
-        if (err)    {
-            console.log(err)
-            res.send(500)
-        }
-        res.send({
-            status: true,
-            message: null,
-            data: parseInt(result / process.env.limit, 10) + 1
-        })
-    })
-  })
-
-  router.post("/userjoin", auth, async (req, res) => {
-    let userId = req.user._id;
-    const courses = await UserJoinCourse.find({user: userId}).populate({ path: "course", populate: {
-      path: "author",
-      select: "_id name email img_avatar",
-    },})
-    res.send({
-      status: true,
-      message: null,
-      data: courses.map((e) => e.course),
-    });
-  })
-
+//for admin
+router.get("/admin/all_course", async (req, res) => {
+  const offset = Number(req.query.offset);
+  const limit = Number(req.query.limit);
+  const resultPage = await Course.countDocuments({})
+  const page = parseInt(resultPage / limit, 10) + 1;
+  const theories = await Course.find({})
+    .populate({ path: "author", select: "_id name img_avatar" })
+    .populate({ path: "id_subject", select: "_id name" })
+    .skip(offset)
+    .limit(limit);
+  res.send({
+    status: true,
+    message: null,
+    meta: {
+      "page": page
+    },
+    data: theories,
+  });
+});
 
 module.exports = router;
