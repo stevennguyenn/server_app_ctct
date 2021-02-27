@@ -71,4 +71,24 @@ router.post("/create_notification", auth, async (req, res) => {
   });
 });
 
+//for admin
+router.get("/admin/all_notification", async (req, res) => {
+  const offset = Number(req.query.offset);
+  const limit = Number(req.query.limit);
+  const resultPage = await Notification.countDocuments({})
+  const page = parseInt(resultPage / limit, 10) + 1;
+  const theories = await Notification.find({})
+    .populate()
+    .skip(offset)
+    .limit(limit);
+  res.send({
+    status: true,
+    message: null,
+    meta: {
+      "page": page
+    },
+    data: theories,
+  });
+});
+
 module.exports = router;

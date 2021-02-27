@@ -49,17 +49,17 @@ const exercise_schema = mongoose.Schema({
     expire_at: {
         type: Date,
         default: Date.now,
-        select: false
+        select: true
     },
     created_at: {
         type: Date,
         default: Date.now,
-        select: false
+        select: true
     },
     updated_at: {
         type: Date,
         default: Date.now,
-        select: false
+        select: true
     },
     __v: {
         type: Number,

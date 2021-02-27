@@ -103,5 +103,26 @@ router.post("/relate_document", auth, async (req, res) => {
     })
 })
 
+
+//for admin
+router.get("/admin/all_video", async (req, res) => {
+    const offset = Number(req.query.offset);
+    const limit = Number(req.query.limit);
+    const resultPage = await Video.countDocuments({})
+    const page = parseInt(resultPage / limit, 10) + 1;
+    const theories = await Video.find({})
+      .populate()
+      .skip(offset)
+      .limit(limit);
+    res.send({
+      status: true,
+      message: null,
+      meta: {
+        "page": page
+      },
+      data: theories,
+    });
+  });
+
 module.exports = router;
 
