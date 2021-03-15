@@ -20,7 +20,7 @@ router.post("/images", uploadImage.single("data"), function(req, res, next) {
     })
 })
 
-router.post("/theories", uploadTheory.single("file"), function(req, res) {
+router.post("/theories", uploadTheory.single("data"), function(req, res) {
     console.log(req.body)
     console.log(req.file)
     const image = new Image()
@@ -35,7 +35,7 @@ router.post("/theories", uploadTheory.single("file"), function(req, res) {
     })
 })
 
-router.post("/exercises", uploadExercise.single("file"), function(req, res) {
+router.post("/exercises", uploadExercise.single("data"), function(req, res) {
     console.log(req.body)
     console.log(req.file)
     const image = new Image()
@@ -48,6 +48,23 @@ router.post("/exercises", uploadExercise.single("file"), function(req, res) {
             data    : data
         })
     })
+})
+
+//for admin
+router.post("/files", uploadTheory.single("data"), function(req, res) {
+    console.log(req.body)
+    console.log(req.file)
+    res.send({
+        status  : true,
+        message : "Successful",
+        data    : req.file.path
+    })
+    // const image = new Image()
+    // image.data = req.file.path
+    // image.save(function(err, data) {
+    //     if(err) throw err
+        
+    // })
 })
 
 module.exports = router;

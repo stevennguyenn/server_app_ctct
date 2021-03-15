@@ -108,4 +108,20 @@ router.get("/admin/all_theory", async (req, res) => {
   });
 });
 
+
+//for admin
+router.post("/admin/create", async (req, res) => {
+  const {name, content, course} = req.body;
+  const theory = await Theory();
+  theory.name = name;
+  theory.content = content;
+  theory.course = course;
+  await theory.save();
+  res.send({
+    status: true,
+    message: null,
+    data: theory,
+  });
+});
+
 module.exports = router;

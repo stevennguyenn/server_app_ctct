@@ -121,4 +121,16 @@ router.get("/admin/all_course", async (req, res) => {
   });
 });
 
+//for admin
+router.get("/admin/all/course", async (req, res) => {
+  const courses = await Course.find({})
+    .populate({ path: "author", select: "_id name img_avatar" })
+    .populate({ path: "id_subject", select: "_id name" })
+  res.send({
+    status: true,
+    message: null,
+    data: courses,
+  });
+});
+
 module.exports = router;
