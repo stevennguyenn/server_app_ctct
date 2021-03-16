@@ -158,7 +158,7 @@ router.get(
 );
 
 //for admin
-router.get("/admin/all_subject", async (req, res) => {
+router.get("/admin/subject", async (req, res) => {
   const offset = Number(req.query.offset);
   const limit = Number(req.query.limit);
   const resultPage = await Subject.countDocuments({})
@@ -173,6 +173,16 @@ router.get("/admin/all_subject", async (req, res) => {
     meta: {
       "page": page
     },
+    data: subjects,
+  });
+})
+
+//for admin
+router.get("/admin/all/subject", async (req, res) => {
+  const subjects = await Subject.find({}).populate()
+  res.send({
+    status: true,
+    message: null,
     data: subjects,
   });
 })

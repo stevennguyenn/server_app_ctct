@@ -261,4 +261,15 @@ router.post('/google', function(req, res) {
     });
 });
 
+
+//admin
+router.get("/admin/all_teacher", async (req, res) => {
+    const users = await User.find({type: "teacher"}).populate()
+    res.send({
+        status  : true,
+        message : null,
+        data    : users
+    })
+})
+
 module.exports = router;

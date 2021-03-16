@@ -108,7 +108,6 @@ router.get("/admin/all_theory", async (req, res) => {
   });
 });
 
-
 //for admin
 router.post("/admin/create", async (req, res) => {
   const {name, content, course} = req.body;
@@ -121,6 +120,18 @@ router.post("/admin/create", async (req, res) => {
     status: true,
     message: null,
     data: theory,
+  });
+});
+
+//for admin
+router.post("/admin/all_theory_in_course", async (req, res) => {
+  const {course} = req.body;
+  const theories = await Theory.find({course: course})
+    .populate()
+  res.send({
+    status: true,
+    message: null,
+    data: theories,
   });
 });
 

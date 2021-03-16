@@ -122,7 +122,25 @@ router.get("/admin/all_video", async (req, res) => {
       },
       data: theories,
     });
-  });
+});
+
+//for admin
+router.post("/admin/create", async (req, res) => {
+    const {name, img_background, course, theory, youtube_id, description} = req.body;
+    const video = await Video();
+    video.name = name;
+    video.img_background = img_background;
+    video.course = course;
+    video.theory = theory;
+    video.youtube_id = youtube_id;
+    video.description = description;
+    await video.save();
+    res.send({
+        status: true,
+        message: null,
+        data: video,
+    });
+});
 
 module.exports = router;
 

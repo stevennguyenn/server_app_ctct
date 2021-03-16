@@ -9,10 +9,6 @@ const video_schema = mongoose.Schema({
         type: String,
         required: true
     },
-    time: {
-        type: Number,
-        required: true
-    },
     course: {
         type: mongoose.Schema.Types.ObjectId,
         required: true,
