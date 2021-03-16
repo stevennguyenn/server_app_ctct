@@ -187,4 +187,21 @@ router.get("/admin/all/subject", async (req, res) => {
   });
 })
 
+//for admin
+router.post("/admin/create", async (req, res) => {
+  const {
+    name,
+    image
+  } = req.body
+  const subject = Subject()
+  subject.name = name
+  subject.image = image
+  await subject.save()
+  res.send({
+    status: true,
+    message: null,
+    data: subject,
+  });
+});
+
 module.exports = router;

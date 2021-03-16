@@ -133,4 +133,33 @@ router.get("/admin/all/course", async (req, res) => {
   });
 });
 
+//for admin
+router.post("/admin/create", async (req, res) => {
+  const {
+    name,
+    id_subject,
+    author,
+    intro,
+    struct,
+    service,
+    goal,
+    images
+  } = req.body
+  const course = Course()
+  course.id_subject = id_subject
+  course.author = author
+  course.name = name
+  course.intro = intro
+  course.struct = struct
+  course.service = service
+  course.goal = goal
+  course.images = images
+  await course.save()
+  res.send({
+    status: true,
+    message: null,
+    data: course,
+  });
+});
+
 module.exports = router;

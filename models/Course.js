@@ -63,10 +63,12 @@ const course_schema = mongoose.Schema({
     rate: {
         type: String,
         required: true,
+        default: "5"
     },
     like: {
         type: Number,
-        required: true
+        required: true,
+        default: 0
     },
     __v: {
         type: Number,

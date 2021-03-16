@@ -20,6 +20,22 @@ router.post("/images", uploadImage.single("data"), function(req, res, next) {
     })
 })
 
+router.post("/multiple_images", uploadImage.array("data"), function(req, res, next) {
+    const listFile = req.files.map((e) => e.path);
+    console.log(listFile)
+    // const files = req.files
+    // if (!files) {
+    //     const error = new Error('Please upload a file')
+    //     error.httpStatusCode = 400
+    //     return next(error)
+    // }
+    res.send({
+        status  : true,
+        message : "Successful",
+        data    : listFile
+    })
+})
+
 router.post("/theories", uploadTheory.single("data"), function(req, res) {
     console.log(req.body)
     console.log(req.file)
@@ -37,7 +53,6 @@ router.post("/theories", uploadTheory.single("data"), function(req, res) {
 
 router.post("/exercises", uploadExercise.single("data"), function(req, res) {
     console.log(req.body)
-    console.log(req.file)
     const image = new Image()
     image.data = req.file.path
     image.save(function(err, data) {
