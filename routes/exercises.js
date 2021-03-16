@@ -186,4 +186,40 @@ router.get("/admin/all_exercise", async (req, res) => {
     });
   });
 
+  //for admin
+router.post("/admin/create", async (req, res) => {
+    const {
+        name,
+        course,
+        theory,
+        type,
+        time,
+        number
+    } = req.body
+    const exercise = Exercise()
+    exercise.name = name
+    exercise.course = course
+    exercise.theory = theory
+    exercise.type = type
+    exercise.time = time
+    console.log("recive")
+    // const questions = await Question.aggregate([
+    //     {$match: {theory: {"$in" : theory}}},
+    //     {$sample: {size: number}}
+    // ])
+    // const questions = await Question.aggregate([
+    //     {$sample: {size: number}},
+    //     {$match: {"5e9184291c9d440000965378": {"$in" : theories}}}
+
+    // ])
+    const questions = await Question.find({theory: {"$in" : theory}}).limit(number)
+    exercise.questions = questions.map((e) => e._id)
+    await exercise.save()
+    res.send({
+      status: true,
+      message: null,
+      data: questions,
+    });
+  });
+
 module.exports = router

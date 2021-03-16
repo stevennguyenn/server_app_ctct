@@ -20,11 +20,11 @@ const exercise_schema = mongoose.Schema({
         enum: ["exercise", "middle", "end"],
         required: true
     },
-    level: {
-        type: String,
-        enum : ["easy", "medium", "hard"],
-        required: true
-    },
+    // level: {
+    //     type: String,
+    //     enum : ["easy", "medium", "hard"],
+    //     required: true
+    // },
     theme: {
         type: String,
         required: false,
