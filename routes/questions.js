@@ -56,4 +56,32 @@ router.get("/admin/all_question", async (req, res) => {
   });
 });
 
+
+//for admin
+router.post("/admin/create", async (req, res) => {
+  const {
+    content,
+    options,
+    type,
+    answer,
+    theory,
+    level,
+    explanation
+  } = req.body
+  const question = Question()
+  question.content = content
+  question.options = options
+  question.type = type
+  question.answer = answer
+  question.theory = theory
+  question.level = level
+  question.explanation = explanation
+  await question.save()
+  res.send({
+    status: true,
+    message: null,
+    data: question,
+  });
+});
+
 module.exports = router;

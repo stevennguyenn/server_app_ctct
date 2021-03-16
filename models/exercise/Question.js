@@ -38,7 +38,7 @@ const question_schema = mongoose.Schema({
     },
     level: {
         type: String,
-        enum : ["easy", "medium", "hard"],
+        enum : ["all","easy", "medium", "hard"],
         required: true
     },
     explanation: {
