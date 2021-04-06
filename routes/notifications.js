@@ -3,6 +3,8 @@ const mongoose = require("mongoose");
 const auth = require("../middleware/auth");
 const Notification = mongoose.model("Notification");
 const UserJoinCourse = mongoose.model("UserJoinCourse");
+const User = mongoose.model("User")
+
 const admin = require("firebase-admin");
 let serviceAccount = require("../ctct-16b49-firebase-adminsdk-8lesv-5eba9083a5.json");
 
@@ -54,26 +56,37 @@ router.post("/admin/create", async (req, res) => {
   const notification = Notification()
   notification.title = title
   notification.message = message
-  // admin
-  //   .messaging()
-  //   .sendToDevice(
-  //     "fxrNJL-UjEFMl6Lr0vEq79:APA91bFX5zDF2yt8SvOI2BhCyee2LscvOJMoG1We9hHi3CA5zxoYX7xB9LRhIldH-DW4EgOSa7wDaWhVm_Uf7BUOG6rGpllEzbdTF5tF2n_dmvm0hM2CLsP8nvN6g_aTAquEavFee-PK",
-  //     payload,
-  //     options
-  //   )
-  //   .then(function (response) {
-  //     console.log("Successfully sent message:", response);
-  //   })
-  //   .catch(function (error) {
-  //     console.log("Error sending message:", error);
-  //   });
-  await notification.save();
+  pushNotificationForAllUser(title, message);
+  await notification.save()
+  //make push notification
   res.send({
     status: true,
     message: "Success",
     data: notification,
-  });
-});
+  })
+})
+
+async function pushNotificationForAllUser(title, message) {
+  // const allFcm = await User.find({}).select("fcm_token");
+  var payloadAll = {
+    notification: {
+      title: title,
+      priority: "high",
+      important: "max",
+      content_available: "true",
+      body: message,
+    },
+  }
+  
+  var payloadAll = {
+    priority: "high",
+    timeToLive: 60 * 60 * 24,
+  }
+  const users = await User.find({type: "student"})
+  const allFcm = users.map((e) => e.fcm_token)
+  console.log(allFcm)
+  
+}
 
 //for admin
 router.get("/admin/all_notification", async (req, res) => {

@@ -104,6 +104,7 @@ router.put("/login", async (req, res) => {
 
 router.put("/update_fcm_token", auth, async (req, res) => {
     const {fcm_token} = req.body;
+    const user = req.user
     user.fcm_token = fcm_token;
     await user.save()
     res.status(201).send({
