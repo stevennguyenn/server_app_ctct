@@ -2,10 +2,12 @@ const router = require("express").Router();
 const mongoose = require("mongoose");
 const ObjectID = require("mongodb").ObjectID;
 const Course = mongoose.model("Course");
+const Theory = mongoose.model("Theory");
 const UserLikeCourse = mongoose.model("Like");
 const UserRateCourse = mongoose.model("UserRateCourse");
 const auth = require("../middleware/auth");
 const UserJoinCourse = mongoose.model("UserJoinCourse");
+
 
 router.get("/", async (req, res) => {
   const offset = Number(req.query.offset);
@@ -132,6 +134,19 @@ router.get("/admin/all/course", async (req, res) => {
     data: courses,
   });
 });
+
+//for admin
+router.delete("/admin/delete/:id", async (req, res) => {
+  const id = req.params.id
+  await Course.deleteOne({_id: id})
+  await UserJoinCourse.deleteMany({course: id})
+  res.send({
+    status: true,
+    message: null,
+    data: true,
+  });
+});
+
 
 //for admin
 router.post("/admin/create", async (req, res) => {
