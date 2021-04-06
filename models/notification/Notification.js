@@ -11,12 +11,13 @@ const notification_schema = mongoose.Schema({
     },
     type: {
         type: String,
-        enum: ["theory", "exercise", "video", "reference_document", "comment"],
+        enum: ["theory", "exercise", "video", "reference_document", "comment", "all"],
+        default: "all",
         required: true,
     },
     id_data: {
         type: mongoose.Schema.Types.ObjectId,
-        required: true,
+        required: false,
     }, 
     title: {
         type: String,

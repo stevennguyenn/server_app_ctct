@@ -187,14 +187,12 @@ router.post('/facebook', function(req, res) {
             const jsonInfo = JSON.parse(chunk);
             const id = jsonInfo.id;
             const user = await User.findOne({"social_id" : id});
-            console.log(user.type);
             if (!user)  {
                 var newUser = User();
                 newUser.social_id = jsonInfo.id;
                 newUser.name = jsonInfo.name;
                 newUser.email = jsonInfo.email;
                 newUser.img_avatar = jsonInfo.picture.data.url;
-                newUser.type = "student";
                 const token = await newUser.generateAuthToken()
                 newUser.token = token
                 newUser.fcm_token = fcm_token
