@@ -57,8 +57,8 @@ router.post("/admin/create", async (req, res) => {
   const notification = Notification()
   notification.title = title
   notification.message = message
-  pushNotificationForAllUser(title, message)
   await notification.save()
+  notification_utils.pushNotificationForAllUser(title, message)
   //make push notification
   res.send({
     status: true,
@@ -66,60 +66,6 @@ router.post("/admin/create", async (req, res) => {
     data: notification,
   })
 })
-
-async function pushNotificationForAllUser(title, message) {
-  // const allFcm = await User.find({}).select("fcm_token");
-  var payload = {
-    notification: {
-      title: title,
-      priority: "high",
-      important: "max",
-      content_available: "true",
-      body: message,
-      // timeToLive: 60 * 60 * 24,
-    },
-  }
-  const users = await User.find({type: "student"})
-  const fcm = users.map((e) => e.fcm_token)
-  for (i = 0; i < fcm.length; i += 1000) {
-    var lastIndex = i + 1000
-    if (lastIndex > fcm.length) {
-        lastIndex = fcm.length;
-    }
-    console.log("pusssshshhh")
-    console.log(fcm.slice(i, lastIndex))
-    await notification_utils.admin.messaging().sendToDevice(fcm.slice(i, lastIndex), payload);
-  }
-  // console.log(allFcm)
-}
-
-async function pushUserJoinCourse(course, title, message) {
-  console.log("pudajdjakdhadhajdasdas")
-  var payload = {
-    notification: {
-      title: title,
-      priority: "high",
-      important: "max",
-      content_available: "true",
-      data: {
-        "test": "test"
-      },
-      body: message,
-      // timeToLive: 60 * 60 * 24,
-    },
-  }
-  const users = await UserJoinCourse.find({course: course}).populate("user").select("user")
-  const fcm = users.map((e) => e.fcm_token)
-  for (i = 0; i < fcm.length; i += 1000) {
-    var lastIndex = i + 1000
-    if (lastIndex > fcm.length) {
-        lastIndex = fcm.length;
-    }
-    console.log("pusssshshhh")
-    console.log(fcm.slice(i, lastIndex))
-    await admin.messaging().sendToDevice(fcm.slice(i, lastIndex), payload);
-  }
-}
 
 //for admin
 router.get("/admin/all_notification", async (req, res) => {

@@ -13,31 +13,29 @@ admin.initializeApp({
   databaseURL: "https://ctct-16b49.firebaseio.com",
 });
 
-// async function pushNotificationForAllUser(title, message) {
-//   // const allFcm = await User.find({}).select("fcm_token");
-//   var payload = {
-//     notification: {
-//       title: title,
-//       priority: "high",
-//       important: "max",
-//       content_available: "true",
-//       body: message,
-//       // timeToLive: 60 * 60 * 24,
-//     },
-//   }
-//   const users = await User.find({type: "student"})
-//   const fcm = users.map((e) => e.fcm_token)
-//   for (i = 0; i < fcm.length; i += 1000) {
-//     var lastIndex = i + 1000
-//     if (lastIndex > fcm.length) {
-//         lastIndex = fcm.length;
-//     }
-//     console.log("pusssshshhh")
-//     console.log(fcm.slice(i, lastIndex))
-//     await admin.messaging().sendToDevice(fcm.slice(i, lastIndex), payload);
-//   }
-//   // console.log(allFcm)
-// }
+async function pushNotificationForAllUser(title, message) {
+  var payload = {
+    notification: {
+      title: title,
+      priority: "high",
+      important: "max",
+      content_available: "true",
+      body: message,
+      // timeToLive: 60 * 60 * 24,
+    },
+  }
+  const users = await User.find({type: "student"})
+  const fcm = users.map((e) => e.fcm_token)
+  for (i = 0; i < fcm.length; i += 1000) {
+    var lastIndex = i + 1000
+    if (lastIndex > fcm.length) {
+        lastIndex = fcm.length;
+    }
+    console.log(fcm.slice(i, lastIndex))
+    await admin.messaging().sendToDevice(fcm.slice(i, lastIndex), payload);
+  }
+  // console.log(allFcm)
+}
 
 async function pushUserJoinCourse(course, title, message, data) {
 //   console.log("pudajdjakdhadhajdasdas")
@@ -70,5 +68,6 @@ async function pushUserJoinCourse(course, title, message, data) {
 }
 
 module.exports = {
-  pushUserJoinCourse: pushUserJoinCourse
+  pushUserJoinCourse: pushUserJoinCourse,
+  pushNotificationForAllUser: pushNotificationForAllUser
 };
