@@ -4,6 +4,7 @@ const Course = mongoose.model("Course");
 const Theory = mongoose.model("Theory");
 const Like = mongoose.model("Like");
 const auth = require("../middleware/auth");
+const notification_utils = require("../utils/notification_utils");
 const Exercise = require("../models/exercise/Exercise");
 const Video = mongoose.model("Video");
 var ObjectID = require("mongodb").ObjectID;
@@ -116,6 +117,11 @@ router.post("/admin/create", async (req, res) => {
   theory.content = content;
   theory.course = course;
   await theory.save();
+  notification_utils.pushUserJoinCourse(course, "Bài giảng mới", "Bài giảng " + name + " vừa được cập nhât. Xem ngay!!!", {
+    "course": course,
+    "type" : "theory",
+    "id": theory.id
+  })
   res.send({
     status: true,
     message: null,

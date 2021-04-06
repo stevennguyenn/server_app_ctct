@@ -4,6 +4,7 @@ const auth = require("../middleware/auth")
 const Exercise = mongoose.model("Exercise")
 const Question = mongoose.model("Question")
 const Result = mongoose.model("Result")
+const notification_utils = require("../utils/notification_utils")
 
 router.post("/list_exercise", auth, async (req, res) => {
     const {offset, limit, id_course, type} = req.body
@@ -215,6 +216,11 @@ router.post("/admin/create", async (req, res) => {
     const questions = await Question.find({theory: {"$in" : theory}}).limit(number)
     exercise.questions = questions.map((e) => e._id)
     await exercise.save()
+    notification_utils.pushUserJoinCourse(course, "Bài tập mới", "Bài tập " + name + " vừa được cập nhât. Xem ngay!!!", {
+        "course": course,
+        "type" : "exercise",
+        "id": exercise.id
+      })
     res.send({
       status: true,
       message: null,

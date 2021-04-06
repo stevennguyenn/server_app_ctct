@@ -9,6 +9,7 @@ const cors = require("cors");
 require("./mongo");
 //models
 require("./models/Comment");
+// require("./utils/notification_utils");
 require("./models/user/User");
 require("./models/Course");
 require("./models/subject/Subject");

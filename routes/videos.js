@@ -5,6 +5,7 @@ const Video = mongoose.model("Video")
 const Like = mongoose.model("Like")
 const auth = require("../middleware/auth")
 const Theory = require("../models/theory/Theory")
+const notification_utils = require("../utils/notification_utils")
 
 router.get("/", async function(req, res) {
     const offset = Number(req.query.offset);
@@ -135,6 +136,11 @@ router.post("/admin/create", async (req, res) => {
     video.youtube_id = youtube_id;
     video.description = description;
     await video.save();
+    notification_utils.pushUserJoinCourse(course, "Video mới", "Video " + name + " vừa được cập nhât. Xem ngay!!!", {
+        "course": course,
+        "type" : "video",
+        "id": video.id
+      })
     res.send({
         status: true,
         message: null,
