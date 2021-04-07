@@ -118,7 +118,7 @@ router.post("/submit_exercise", auth, async (req, res) => {
         userAnswer["content"] = list_question[i].content
         userAnswer["options"] = list_question[i].options
         userAnswer["type"] = list_question[i].type
-        userAnswer["level"] = list_question[i].level
+        userAnswer["level"] = "all"
         userAnswer["user_answer"] = answer[i].answer
         if (list_question[i].type == "fill") {
             console.log(list_question[i])
@@ -150,7 +150,7 @@ router.post("/submit_exercise", auth, async (req, res) => {
     result.exercise = exercise._id
     result.point = point
     result.time = time
-    result.level = exercise.level
+    // result.level = exercise.level
     result.diamond = point * 10;
     result.experience = point * 100;
     result.result_questions = result_questions
