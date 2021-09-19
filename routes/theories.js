@@ -151,4 +151,14 @@ router.post("/admin/all_theory_in_course", async (req, res) => {
   });
 });
 
+router.get("/admin/:id", async (req, res) => {
+  const id = req.params.id
+  const theory = await Theory.findById(id)
+  res.send({
+    status: true,
+    message: null,
+    data: theory,
+  });
+});
+
 module.exports = router;

@@ -177,4 +177,14 @@ router.post("/admin/create", async (req, res) => {
   });
 });
 
+router.get("/admin/:id", async (req, res) => {
+  const id = req.params.id
+  const course = await Course.findById(id)
+  res.send({
+    status: true,
+    message: null,
+    data: course,
+  });
+});
+
 module.exports = router;

@@ -228,4 +228,14 @@ router.post("/admin/create", async (req, res) => {
     });
   });
 
+  router.delete("/admin/delete/:id", async (req, res) => {
+    const id = req.params.id
+    await Exercise.deleteOne({_id: id})
+    res.send({
+      status: true,
+      message: null,
+      data: true,
+    });
+  });
+
 module.exports = router
