@@ -177,6 +177,21 @@ router.post("/admin/create", async (req, res) => {
   });
 });
 
+router.post("/admin/edit", async (req, res) => {
+  const {
+    name,
+    id
+  } = req.body
+  const course = await Course.findById(id)
+  course.name = name
+  await course.save()
+  res.send({
+    status: true,
+    message: null,
+    data: course,
+  });
+});
+
 router.get("/admin/:id", async (req, res) => {
   const id = req.params.id
   const course = await Course.findById(id)

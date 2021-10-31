@@ -129,6 +129,20 @@ router.post("/admin/create", async (req, res) => {
   });
 });
 
+router.post("/admin/edit", async (req, res) => {
+  const {name, content, id} = req.body;
+  const theory = await Theory.findOne({ _id: id});
+  console.log(theory);
+  theory.name = name;
+  theory.content = content;
+  await theory.save();
+  res.send({
+    status: true,
+    message: null,
+    data: theory,
+  });
+});
+
 router.delete("/admin/delete/:id", async (req, res) => {
   const id = req.params.id
   await Theory.deleteOne({_id: id})
