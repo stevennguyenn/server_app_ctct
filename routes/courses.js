@@ -24,6 +24,18 @@ router.get("/", async (req, res) => {
 });
 
 
+router.get("/detail/:id_course", async (req, res) => {
+  const id_course = req.params.id_course; 
+  const course = await Course.findOne({_id: id_course})
+  .populate({ path: "author", select: "_id name img_avatar" })
+  .populate({ path: "id_subject", select: "_id name" })
+  res.send({
+    status: true,
+    message: null,
+    data: course,
+  });
+});
+
 router.get("/more_info/:id_course", auth, async (req, res) => {
   const id_course = req.params.id_course; 
   const likeCourse = await UserLikeCourse.find({$and: [{id_user: req.user._id}, {id_content: id_course}]})

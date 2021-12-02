@@ -38,6 +38,10 @@ const result_schema = mongoose.Schema({
         type: Number,
         required: true,
     },
+    show_result: {
+        type: Boolean,
+        default: true
+    },
     result_questions: [
         {
             content: {

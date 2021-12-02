@@ -2,6 +2,7 @@ const router = require("express").Router()
 const mongoose = require("mongoose")
 const auth = require("../middleware/auth")
 const Result = mongoose.model("Result")
+const Exercise = mongoose.model("Exercise")
 const User = mongoose.model("User")
 const Comment = mongoose.model("Comment")
 var ObjectID = require("mongodb").ObjectID
@@ -86,6 +87,9 @@ router.post("/list_result_competition", auth, async (req, res) => {
 router.get("/:id_result", auth, async (req, res) => {
     const id_result = req.params.id_result
     const result = await Result.findOne({_id: id_result})
+    const exercise = await Exercise.findOne({_id: result.exercise})
+    console.log(exercise.show_result);
+    result.show_result = exercise.show_result
     res.send({
         status  : true,
         message : null,

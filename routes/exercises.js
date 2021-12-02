@@ -154,6 +154,7 @@ router.post("/submit_exercise", auth, async (req, res) => {
     result.diamond = point * 10;
     result.experience = point * 100;
     result.result_questions = result_questions
+    result.show_result = exercise.show_result
     await result.save()
     exercise.user.push(req.user._id)
     await exercise.save()
@@ -225,6 +226,23 @@ router.post("/admin/create", async (req, res) => {
       status: true,
       message: null,
       data: questions,
+    });
+  });
+
+  router.post("/admin/change_status_exercise", async (req, res) => {
+    const {
+        id,
+        status,
+    } = req.body
+    console.log(id)
+    console.log(status)
+    const exercise = await Exercise.findOne({_id : id});
+    exercise.show_result = status
+    await exercise.save()
+    res.send({
+      status: true,
+      message: null,
+      data: true,
     });
   });
 
